@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Susan Shaw — Analysis Reports</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8D5A0;
+  --gold-pale: #F5EDD8;
+  --cream: #FAF7F2;
+  --ink: #1A1510;
+  --ink-mid: #3D3328;
+  --ink-light: #7A6B55;
+  --ink-faint: #B8A98C;
+  --stone: #E8E0D4;
+  --stone-dark: #D4C9B8;
+  --white: #FFFFFF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Raleway', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER */
+.header {
+  background: var(--ink);
+  padding: 56px 48px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent, transparent 18px,
+    rgba(201,168,76,0.07) 18px, rgba(201,168,76,0.07) 19px
+  );
+}
+.header-inner { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+.header-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 0.25em;
+  color: var(--gold); text-transform: uppercase; margin-bottom: 12px;
+}
+.header-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 300; color: var(--white); line-height: 1.0;
+}
+.header-title em { color: var(--gold); font-style: italic; }
+
+/* DIVIDER */
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, var(--gold), transparent);
+  max-width: 800px; margin: 0 auto;
+  opacity: 0.35;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 48px;
+}
+
+.selector-wrap {
+  width: 100%;
+  max-width: 560px;
+}
+
+.selector-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-faint);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 14px;
+}
+.selector-label::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: var(--stone-dark);
+}
+
+.select-row {
+  display: flex; gap: 12px; align-items: stretch;
+}
+
+select {
+  flex: 1;
+  font-family: 'Raleway', sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--stone-dark);
+  border-radius: 3px;
+  padding: 14px 18px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23B8A98C' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+select:focus { border-color: var(--gold); }
+select option { color: var(--ink); background: var(--white); }
+select option[disabled] { color: var(--ink-faint); }
+
+.go-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--gold);
+  border: none;
+  border-radius: 3px;
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+.go-btn:hover { background: var(--ink-mid); }
+.go-btn:disabled { opacity: 0.35; cursor: default; background: var(--gold); }
+
+.error-msg {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; color: #C4846A;
+  margin-top: 12px;
+  display: none;
+}
+
+/* FOOTER */
+.footer {
+  background: var(--ink);
+  padding: 22px 48px;
+  text-align: center;
+}
+.footer-inner {
+  max-width: 800px; margin: 0 auto;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 0.12em;
+  color: var(--ink-faint); text-transform: uppercase;
+}
+.footer-inner span { color: var(--gold); }
+
+@media (max-width: 640px) {
+  .header { padding: 36px 24px 32px; }
+  .main { padding: 48px 24px; }
+  .footer { padding: 20px 24px; }
+  .select-row { flex-direction: column; }
+  .go-btn { width: 100%; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-eyebrow">Page 3 Consulting · Susan Shaw Jewelry</div>
+    <div class="header-title">Analysis<br><em>Reports</em></div>
+  </div>
+</div>
+<div class="divider"></div>
+
+<main class="main">
+  <div class="selector-wrap">
+    <div class="selector-label">Select a report</div>
+    <div class="select-row">
+      <select id="report-select">
+        <option value="" disabled selected>Choose a report…</option>
+      </select>
+      <button class="go-btn" id="go-btn" disabled onclick="openReport()">View</button>
+    </div>
+    <div class="error-msg" id="error-msg">Unable to load report list. Please try again.</div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>Susan Shaw Jewelry</span> · Analytics by Page 3 Consulting · Confidential
+  </div>
+</footer>
+
+<script>
+const select = document.getElementById('report-select');
+const btn = document.getElementById('go-btn');
+const errMsg = document.getElementById('error-msg');
+
+// Load reports from manifest
+fetch('reports.json')
+  .then(r => {
+    if (!r.ok) throw new Error('Failed to load');
+    return r.json();
+  })
+  .then(reports => {
+    if (!reports.length) {
+      select.innerHTML = '<option value="" disabled selected>No reports available yet</option>';
+      return;
+    }
+    reports.forEach(report => {
+      const opt = document.createElement('option');
+      opt.value = 'reports/' + report.file;
+      opt.textContent = report.name;
+      select.appendChild(opt);
+    });
+  })
+  .catch(() => {
+    errMsg.style.display = 'block';
+  });
+
+// Enable button when a report is selected
+select.addEventListener('change', () => {
+  btn.disabled = !select.value;
+});
+
+// Navigate to selected report in same tab
+function openReport() {
+  if (select.value) {
+    window.location.href = select.value;
+  }
+}
+</script>
+
+</body>
+</html>
