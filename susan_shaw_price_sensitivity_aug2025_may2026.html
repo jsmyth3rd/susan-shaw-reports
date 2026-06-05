@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Susan Shaw — Price Sensitivity Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8D5A0;
+  --gold-pale: #F5EDD8;
+  --cream: #FAF7F2;
+  --ink: #1A1510;
+  --ink-mid: #3D3328;
+  --ink-light: #7A6B55;
+  --ink-faint: #B8A98C;
+  --stone: #E8E0D4;
+  --stone-dark: #D4C9B8;
+  --white: #FFFFFF;
+  --accent-rose: #C4846A;
+  --accent-teal: #5A8A7A;
+  --accent-slate: #6B7F8A;
+  --bin0: #B8A98C;
+  --bin1: #5A8A7A;
+  --bin2: #C9A84C;
+  --bin3: #6B7F8A;
+  --bin4: #C4846A;
+  --bin5: #3D3328;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Raleway', sans-serif; background: var(--cream); color: var(--ink); font-size: 15px; line-height: 1.6; }
+
+/* HEADER */
+.site-header {
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+  padding: 60px 48px 52px;
+}
+.site-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 28px,
+    rgba(201,168,76,0.06) 28px,
+    rgba(201,168,76,0.06) 29px
+  );
+  pointer-events: none;
+}
+.header-inner { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; }
+.header-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.header-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 300;
+  color: var(--white);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.header-title em { font-style: italic; color: var(--gold-light); }
+.header-sub {
+  margin-top: 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 0.08em;
+}
+.gold-rule { width: 60px; height: 1px; background: var(--gold); margin: 24px 0; }
+
+/* NAV */
+.sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--ink-mid);
+  border-bottom: 1px solid rgba(201,168,76,0.25);
+}
+.nav-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-inner::-webkit-scrollbar { display: none; }
+.nav-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding: 16px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.nav-btn:hover { color: var(--gold-light); }
+.nav-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* MAIN */
+.main { max-width: 1240px; margin: 0 auto; padding: 48px 48px 80px; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* SECTION HEADERS */
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 32px;
+  line-height: 1.1;
+}
+
+/* KPI GRID */
+.kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 40px; }
+.kpi-card {
+  background: var(--white);
+  border: 1px solid var(--stone);
+  padding: 24px 24px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--gold);
+}
+.kpi-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 10px; }
+.kpi-value { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 500; color: var(--ink); line-height: 1; }
+.kpi-sub { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-faint); margin-top: 6px; }
+
+/* CARDS / CHARTS */
+.chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+.chart-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+.chart-card {
+  background: var(--white);
+  border: 1px solid var(--stone);
+  padding: 28px;
+}
+.chart-card.full { width: 100%; margin-bottom: 32px; }
+.chart-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.chart-desc { font-size: 12px; color: var(--ink-light); font-family: 'DM Mono', monospace; margin-bottom: 20px; }
+.chart-wrap { position: relative; }
+
+/* INSIGHT CALLOUT */
+.insight-box {
+  background: var(--ink);
+  color: var(--gold-light);
+  padding: 24px 28px;
+  margin: 32px 0;
+  position: relative;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.insight-box::before {
+  content: 'INSIGHT';
+  position: absolute;
+  top: -8px; left: 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  background: var(--gold);
+  color: var(--ink);
+  padding: 2px 8px;
+}
+.insight-box strong { color: var(--gold); }
+
+/* GAUGE BARS */
+.gauge-list { list-style: none; }
+.gauge-item { margin-bottom: 14px; }
+.gauge-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-light); }
+.gauge-track { height: 8px; background: var(--stone); border-radius: 0; overflow: hidden; }
+.gauge-fill { height: 100%; border-radius: 0; transition: width 0.8s ease; }
+
+/* SELECTOR BUTTONS */
+.sel-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.sel-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--stone-dark);
+  background: transparent;
+  color: var(--ink-light);
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.sel-btn:hover { border-color: var(--gold); color: var(--gold); }
+.sel-btn.active { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+
+/* PRODUCT DRILL-DOWN */
+.prod-list { margin-top: 4px; }
+.prod-item { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--stone); }
+.prod-item:last-child { border-bottom: none; }
+.prod-rank { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-faint); width: 18px; flex-shrink: 0; }
+.prod-name { font-size: 13px; color: var(--ink-mid); flex: 1; }
+.prod-bar-wrap { width: 100px; flex-shrink: 0; }
+.prod-bar-track { height: 5px; background: var(--stone); }
+.prod-bar-fill { height: 5px; background: var(--gold); }
+.prod-units { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-light); width: 50px; text-align: right; flex-shrink: 0; }
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 16px; }
+.data-table th { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-light); text-align: left; padding: 8px 12px; border-bottom: 2px solid var(--gold); background: var(--gold-pale); }
+.data-table td { padding: 10px 12px; border-bottom: 1px solid var(--stone); color: var(--ink-mid); }
+.data-table tr:hover td { background: var(--gold-pale); }
+.data-table .mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+
+/* LEGEND */
+.legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-mid); }
+.legend-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+
+/* DIVIDER */
+.sec-divider { border: none; border-top: 1px solid var(--stone); margin: 48px 0; }
+
+@media (max-width: 900px) {
+  .main { padding: 32px 20px 60px; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .chart-grid-2, .chart-grid-3 { grid-template-columns: 1fr; }
+  .site-header { padding: 40px 20px 36px; }
+  .nav-inner { padding: 0 20px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-tag">Price Sensitivity Analysis</div>
+    <h1 class="header-title">Susan Shaw<br><em>Price Sensitivity Analysis</em></h1>
+    <div class="gold-rule"></div>
+    <div class="header-sub">Aug 15, 2025 &mdash; May 27, 2026 &nbsp;&bull;&nbsp; 58,951 Orders &nbsp;&bull;&nbsp; 45,990 Customers</div>
+  </div>
+</header>
+
+<nav class="sticky-nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="showTab('overview',this)">Overview</button>
+    <button class="nav-btn" onclick="showTab('bins',this)">Price Bins</button>
+    <button class="nav-btn" onclick="showTab('discount',this)">Discount Depth</button>
+    <button class="nav-btn" onclick="showTab('affinity',this)">Price Affinity</button>
+    <button class="nav-btn" onclick="showTab('trends',this)">Trends Over Time</button>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- TAB 1: OVERVIEW -->
+<div id="tab-overview" class="tab-content active">
+  <div class="section-label">Tab 01</div>
+  <h2 class="section-title">Performance Overview</h2>
+
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Orders by Price Tier</div>
+      <div class="chart-desc">% of orders in each unit price bucket</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chartOrdersBin"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Avg Discount Rate by Tier</div>
+      <div class="chart-desc">Mean discount depth at the order level</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chartDiscBin"></canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-card full">
+    <div class="chart-title">% of Orders Discounted by Tier</div>
+    <div class="chart-desc">Share of orders that received any discount</div>
+    <ul class="gauge-list" id="gaugeDiscPct"></ul>
+  </div>
+
+  <div class="chart-card full">
+    <div class="chart-title">New vs. Returning Customers — Price Bin Mix</div>
+    <div class="chart-desc">Stacked share of orders by tier and customer type</div>
+    <div class="legend" id="legendNR"></div>
+    <div class="chart-wrap" style="height:200px"><canvas id="chartNR"></canvas></div>
+  </div>
+
+  <div id="insightOverview" class="insight-box"></div>
+</div>
+
+<!-- TAB 2: PRICE BINS -->
+<div id="tab-bins" class="tab-content">
+  <div class="section-label">Tab 02</div>
+  <h2 class="section-title">Price Bin Deep Dive</h2>
+
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Net Sales by Tier</div>
+      <div class="chart-desc">Product-level net sales contribution</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chartProdSales"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Units Sold by Tier</div>
+      <div class="chart-desc">Total units moved across each price band</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chartProdUnits"></canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-card full">
+    <div class="chart-title">Top Products by Tier</div>
+    <div class="chart-desc">Select a tier to see its top-6 products by units sold</div>
+    <div class="sel-btns" id="tierBtns"></div>
+    <div class="prod-list" id="prodDrillDown"></div>
+  </div>
+
+  <div class="chart-card full">
+    <div class="chart-title">Avg Discount Rate by Tier</div>
+    <div class="chart-desc">Product-level average discount depth per tier</div>
+    <ul class="gauge-list" id="gaugeProdDisc"></ul>
+  </div>
+
+  <div id="insightBins" class="insight-box"></div>
+
+  <hr class="sec-divider" style="margin-top:16px">
+  <div class="section-label">Discount Dependency by Product</div>
+  <div class="chart-card full">
+    <div class="chart-title">Top 25 Most Discount-Dependent Products</div>
+    <div class="chart-desc">Ranked by % of transactions where a discount was applied — normalized for volume. Minimum 20 transactions to qualify.</div>
+    <div class="chart-wrap" style="height:560px"><canvas id="chartTop25Disc"></canvas></div>
+  </div>
+  <div class="chart-card full" style="margin-top:24px">
+    <table class="data-table" id="tableTop25"></table>
+  </div>
+  <div id="insightTop25" class="insight-box"></div>
+
+  <hr class="sec-divider" style="margin-top:16px">
+  <div class="section-label">Least Discount-Dependent Products</div>
+  <div class="chart-card full">
+    <div class="chart-title">Bottom 25 — Strongest Full-Price Performers</div>
+    <div class="chart-desc">Ranked by % of transactions where a discount was applied (ascending) — these products sell closest to full price. Minimum 20 transactions to qualify.</div>
+    <div class="chart-wrap" style="height:560px"><canvas id="chartBot25Disc"></canvas></div>
+  </div>
+  <div class="chart-card full" style="margin-top:24px">
+    <table class="data-table" id="tableBot25"></table>
+  </div>
+  <div id="insightBot25" class="insight-box"></div>
+</div>
+
+<!-- TAB 3: DISCOUNT DEPTH -->
+<div id="tab-discount" class="tab-content">
+  <div class="section-label">Tab 03</div>
+  <h2 class="section-title">Discount Depth by Segment</h2>
+
+  <div class="section-label" style="margin-top:0">By Age Group</div>
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Avg Discount Rate — Age</div>
+      <div class="chart-desc">Survey-matched orders only (35.9% coverage)</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="chartAgeDiscRate"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">% Orders Discounted — Age</div>
+      <div class="chart-desc">Share of units purchased with a discount</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="chartAgePctDisc"></canvas></div>
+    </div>
+  </div>
+  <div class="chart-card full">
+    <table class="data-table" id="tableAge"></table>
+  </div>
+  <div id="insightAge" class="insight-box"></div>
+
+  <hr class="sec-divider">
+  <div class="section-label">By Region</div>
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Avg Discount Rate — Region</div>
+      <div class="chart-desc">Mean discount depth across macro regions</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chartRegDiscRate"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">% Orders Discounted — Region</div>
+      <div class="chart-desc">Share of orders with any discount</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chartRegPctDisc"></canvas></div>
+    </div>
+  </div>
+  <div class="chart-card full">
+    <table class="data-table" id="tableReg"></table>
+  </div>
+  <div id="insightReg" class="insight-box"></div>
+
+  <hr class="sec-divider">
+  <div class="section-label">By Channel</div>
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Avg Discount Rate — Channel</div>
+      <div class="chart-desc">Top 8 channels by net sales</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chartChDiscRate"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">% Orders Discounted — Channel</div>
+      <div class="chart-desc">Share of orders receiving any discount</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chartChPctDisc"></canvas></div>
+    </div>
+  </div>
+  <div class="chart-card full">
+    <table class="data-table" id="tableCh"></table>
+  </div>
+  <div id="insightCh" class="insight-box"></div>
+</div>
+
+<!-- TAB 4: PRICE AFFINITY -->
+<div id="tab-affinity" class="tab-content">
+  <div class="section-label">Tab 04</div>
+  <h2 class="section-title">Price Point Affinity</h2>
+
+  <div class="legend" id="legendAffinity"></div>
+
+  <div class="section-label">By Age Group</div>
+  <div class="chart-card full">
+    <div class="chart-title">Price Tier Mix by Age Group</div>
+    <div class="chart-desc">Survey-matched orders — % of units in each price tier (35.9% of orders matched)</div>
+    <div class="chart-wrap" style="height:320px"><canvas id="chartAffinityAge"></canvas></div>
+  </div>
+  <div id="insightAffinityAge" class="insight-box"></div>
+
+  <div class="section-label">By Region</div>
+  <div class="chart-card full">
+    <div class="chart-title">Price Tier Mix by Region</div>
+    <div class="chart-desc">All orders — % of orders in each price tier</div>
+    <div class="chart-wrap" style="height:240px"><canvas id="chartAffinityReg"></canvas></div>
+  </div>
+  <div id="insightAffinityReg" class="insight-box"></div>
+
+  <div class="section-label">By Channel</div>
+  <div class="chart-card full">
+    <div class="chart-title">Price Tier Mix by Channel</div>
+    <div class="chart-desc">Top 5 channels by net sales — % of orders in each tier</div>
+    <div class="chart-wrap" style="height:280px"><canvas id="chartAffinityCh"></canvas></div>
+  </div>
+  <div id="insightAffinityCh" class="insight-box"></div>
+</div>
+
+<!-- TAB 5: TRENDS -->
+<div id="tab-trends" class="tab-content">
+  <div class="section-label">Tab 05</div>
+  <h2 class="section-title">Trends Over Time</h2>
+
+  <div class="legend" id="legendTrends"></div>
+  <div class="chart-card full">
+    <div class="chart-title">Price Tier Mix by Month</div>
+    <div class="chart-desc">Monthly share of orders in each price bin — reveals catalog mix shifts</div>
+    <div class="chart-wrap" style="height:320px"><canvas id="chartTrendBins"></canvas></div>
+  </div>
+
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Avg Unit Price by Month</div>
+      <div class="chart-desc">Order-level average — trend indicator</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="chartTrendPrice"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">% of Orders Discounted by Month</div>
+      <div class="chart-desc">Promotional intensity over time</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="chartTrendDisc"></canvas></div>
+    </div>
+  </div>
+
+  <div id="insightTrends" class="insight-box"></div>
+</div>
+
+</main>
+
+<script>
+const BOT25 = [{"name": "USA 250 Pearl Necklace", "pct_disc": 0.0968, "avg_disc_rate": 0.0145, "total_units": 58, "avg_price": 160.63}, {"name": "Athens Studs", "pct_disc": 0.2273, "avg_disc_rate": 0.0312, "total_units": 22, "avg_price": 46.17}, {"name": "Camellia Clover Linked Bracelet", "pct_disc": 0.2667, "avg_disc_rate": 0.165, "total_units": 29, "avg_price": 129.3}, {"name": "Small Cross Katie Necklace", "pct_disc": 0.2917, "avg_disc_rate": 0.0438, "total_units": 19, "avg_price": 120.8}, {"name": "Nautilus Studs", "pct_disc": 0.3478, "avg_disc_rate": 0.0522, "total_units": 24, "avg_price": 47.39}, {"name": "Bee Intaglio Pearl Bracelet", "pct_disc": 0.35, "avg_disc_rate": 0.0636, "total_units": 29, "avg_price": 115.17}, {"name": "Palmera Beaded Necklace", "pct_disc": 0.3514, "avg_disc_rate": 0.163, "total_units": 98, "avg_price": 123.48}, {"name": "Levi Demi Hoops", "pct_disc": 0.3793, "avg_disc_rate": 0.1426, "total_units": 22, "avg_price": 48.25}, {"name": "Laurel Leaf Studs", "pct_disc": 0.381, "avg_disc_rate": 0.0928, "total_units": 25, "avg_price": 45.36}, {"name": "Small Mother of Pearl Cross Jane Necklace", "pct_disc": 0.383, "avg_disc_rate": 0.117, "total_units": 99, "avg_price": 107.53}, {"name": "Small Mother of Pearl Cross Katie Necklace", "pct_disc": 0.3906, "avg_disc_rate": 0.0742, "total_units": 66, "avg_price": 132.98}, {"name": "Camellia Clover Studs", "pct_disc": 0.3929, "avg_disc_rate": 0.1331, "total_units": 24, "avg_price": 81.46}, {"name": "Small Mother of Pearl Cross Paperclip Necklace", "pct_disc": 0.3952, "avg_disc_rate": 0.1, "total_units": 123, "avg_price": 94.59}, {"name": "Farrah Beaded Necklace", "pct_disc": 0.3958, "avg_disc_rate": 0.089, "total_units": 80, "avg_price": 88.97}, {"name": "Ida Studs", "pct_disc": 0.3962, "avg_disc_rate": 0.0886, "total_units": 39, "avg_price": 88.77}, {"name": "Camellia Clover Ring", "pct_disc": 0.4, "avg_disc_rate": 0.1683, "total_units": 28, "avg_price": 73.45}, {"name": "Jade Double Strand Necklace", "pct_disc": 0.4198, "avg_disc_rate": 0.1407, "total_units": 120, "avg_price": 157.97}, {"name": "Pearl Starfish Studs", "pct_disc": 0.4286, "avg_disc_rate": 0.1401, "total_units": 20, "avg_price": 57.75}, {"name": "Horseshoe Frame Pendant", "pct_disc": 0.4359, "avg_disc_rate": 0.0687, "total_units": 40, "avg_price": 33.53}, {"name": "Ethiopian Cross Pendant", "pct_disc": 0.44, "avg_disc_rate": 0.0657, "total_units": 60, "avg_price": 33.63}, {"name": "Dainty Bee Necklace", "pct_disc": 0.44, "avg_disc_rate": 0.066, "total_units": 17, "avg_price": 61.88}, {"name": "Roma Studs", "pct_disc": 0.4412, "avg_disc_rate": 0.1553, "total_units": 152, "avg_price": 80.93}, {"name": "Magnolia Pearl Stretch Bracelet", "pct_disc": 0.4419, "avg_disc_rate": 0.1325, "total_units": 44, "avg_price": 73.54}, {"name": "Turquoise Dotted Studs", "pct_disc": 0.4444, "avg_disc_rate": 0.1243, "total_units": 25, "avg_price": 73.09}, {"name": "Liza Necklace", "pct_disc": 0.4545, "avg_disc_rate": 0.1864, "total_units": 15, "avg_price": 108.11}];
+
+const TOP25 = [{"name": "Mini Bee Studs", "pct_disc": 0.8571, "avg_disc_rate": 0.2841, "total_units": 25, "avg_price": 32.6}, {"name": "Bee Stamp Necklace", "pct_disc": 0.85, "avg_disc_rate": 0.225, "total_units": 23, "avg_price": 69.75}, {"name": "Mixed Metal Elephant Intaglio Bracelet", "pct_disc": 0.8387, "avg_disc_rate": 0.2288, "total_units": 30, "avg_price": 91.97}, {"name": "Compass Studs", "pct_disc": 0.8182, "avg_disc_rate": 0.2404, "total_units": 32, "avg_price": 54.36}, {"name": "Turtle Intaglio Bracelet", "pct_disc": 0.8077, "avg_disc_rate": 0.2404, "total_units": 29, "avg_price": 72.17}, {"name": "Oyster Bangle", "pct_disc": 0.8, "avg_disc_rate": 0.1622, "total_units": 24, "avg_price": 76.49}, {"name": "Bee + Pearl Wire Drop Earrings", "pct_disc": 0.8, "avg_disc_rate": 0.1875, "total_units": 20, "avg_price": 62.93}, {"name": "Mini Poppy Studs", "pct_disc": 0.8, "avg_disc_rate": 0.2131, "total_units": 86, "avg_price": 35.62}, {"name": "Dotted Cross Cuff", "pct_disc": 0.7941, "avg_disc_rate": 0.2017, "total_units": 35, "avg_price": 94.74}, {"name": "Linked Rectangle Toggle Bracelet", "pct_disc": 0.7931, "avg_disc_rate": 0.1696, "total_units": 29, "avg_price": 106.29}, {"name": "Dotted Scallop Earrings", "pct_disc": 0.7931, "avg_disc_rate": 0.2177, "total_units": 25, "avg_price": 46.04}, {"name": "Wild Boar Intaglio Paperclip Necklace", "pct_disc": 0.7925, "avg_disc_rate": 0.1589, "total_units": 56, "avg_price": 89.16}, {"name": "Dainty Ginkgo Necklace", "pct_disc": 0.7917, "avg_disc_rate": 0.1666, "total_units": 31, "avg_price": 81.67}, {"name": "Elephant Intaglio Red Coral Bracelet", "pct_disc": 0.7899, "avg_disc_rate": 0.1438, "total_units": 148, "avg_price": 75.54}, {"name": "Elephant Intaglio Red Coral Necklace", "pct_disc": 0.7879, "avg_disc_rate": 0.1757, "total_units": 35, "avg_price": 116.03}, {"name": "Elephant Intaglio Bracelet", "pct_disc": 0.7857, "avg_disc_rate": 0.1728, "total_units": 66, "avg_price": 87.69}, {"name": "Coin Toggle Onyx Necklace", "pct_disc": 0.7838, "avg_disc_rate": 0.1717, "total_units": 36, "avg_price": 116.47}, {"name": "Longhorn Intaglio Paperclip Necklace", "pct_disc": 0.7838, "avg_disc_rate": 0.2164, "total_units": 38, "avg_price": 94.03}, {"name": "Alligator Drop Earrings", "pct_disc": 0.7833, "avg_disc_rate": 0.1447, "total_units": 63, "avg_price": 52.88}, {"name": "Bee Lira Chain Bracelet", "pct_disc": 0.7833, "avg_disc_rate": 0.183, "total_units": 52, "avg_price": 102.56}, {"name": "Susan Shaw Logo Studs", "pct_disc": 0.7826, "avg_disc_rate": 0.2071, "total_units": 25, "avg_price": 53.92}, {"name": "Cross Intaglio Necklace", "pct_disc": 0.7805, "avg_disc_rate": 0.147, "total_units": 80, "avg_price": 144.34}, {"name": "Mixed Metal Cross Toggle Bracelet", "pct_disc": 0.776, "avg_disc_rate": 0.1662, "total_units": 838, "avg_price": 98.6}, {"name": "Maude Hoops", "pct_disc": 0.7727, "avg_disc_rate": 0.2334, "total_units": 22, "avg_price": 49.06}, {"name": "Oyster Plate Toggle Necklace", "pct_disc": 0.7727, "avg_disc_rate": 0.1704, "total_units": 19, "avg_price": 110.04}];
+
+const D = {"kpis": {"total_orders": 58951, "unique_customers": 45990, "net_sales": 8460535.55, "avg_order_value": 143.52, "gross_aov": 169.55, "overall_disc_rate": 0.1292, "pct_discounted": 0.7058, "zero_disc_orders": 17344, "any_disc_orders": 41607, "disc_dist": {"10-20%": 30405, "0%": 17344, "20%+": 10597, "1-10%": 605}}, "bin_orders": [{"bin": "Under $40", "orders": 11451, "net_sales": 828682.78, "avg_disc": 0.1224, "pct_disc": 0.6607, "pct_orders": 0.1942}, {"bin": "$40-65", "orders": 27137, "net_sales": 3751928.06, "avg_disc": 0.143, "pct_disc": 0.7785, "pct_orders": 0.4603}, {"bin": "$65-90", "orders": 13273, "net_sales": 2518571.44, "avg_disc": 0.1184, "pct_disc": 0.6334, "pct_orders": 0.2252}, {"bin": "$90-120", "orders": 4979, "net_sales": 953910.14, "avg_disc": 0.1187, "pct_disc": 0.6973, "pct_orders": 0.0845}, {"bin": "$120-200", "orders": 2053, "net_sales": 391760.33, "avg_disc": 0.0796, "pct_disc": 0.4876, "pct_orders": 0.0348}, {"bin": "$200+", "orders": 58, "net_sales": 15682.8, "avg_disc": 0.115, "pct_disc": 0.6034, "pct_orders": 0.001}], "bin_products": [{"bin": "Under $40", "units": 6304, "net_sales": 146120.62, "avg_disc": 0.4403, "pct_units": 0.0692}, {"bin": "$40-65", "units": 24156, "net_sales": 1338022.59, "avg_disc": 0.2048, "pct_units": 0.2653}, {"bin": "$65-90", "units": 22391, "net_sales": 1721366.84, "avg_disc": 0.1303, "pct_units": 0.2459}, {"bin": "$90-120", "units": 22360, "net_sales": 2286673.49, "avg_disc": 0.1139, "pct_units": 0.2456}, {"bin": "$120-200", "units": 15125, "net_sales": 2120168.01, "avg_disc": 0.0681, "pct_units": 0.1661}, {"bin": "$200+", "units": 713, "net_sales": 172042.93, "avg_disc": 0.0589, "pct_units": 0.0078}], "top_products": {"Under $40": [{"name": "Alys Necklace", "units": 416}, {"name": "Hammered Hoops", "units": 166}, {"name": "Rectangle Ring", "units": 163}, {"name": "Oyster Earrings", "units": 149}, {"name": "Bentley Stone Bracelet", "units": 130}, {"name": "Bold X Studs", "units": 114}], "$40-65": [{"name": "Alys Necklace", "units": 927}, {"name": "Square Cross Earrings", "units": 653}, {"name": "Hammered Hoops", "units": 571}, {"name": "Bentley Stone Bracelet", "units": 546}, {"name": "Jerusalem Cross Studs", "units": 483}, {"name": "Marigold Studs", "units": 443}], "$65-90": [{"name": "Alys Necklace", "units": 665}, {"name": "Cross Toggle Necklace", "units": 637}, {"name": "Alys Cross Necklace", "units": 607}, {"name": "Dainty Tall Cross Necklace", "units": 427}, {"name": "Double Link Chain Bracelet", "units": 418}, {"name": "Mini Margaret Bracelet", "units": 409}], "$90-120": [{"name": "Cross Toggle Necklace", "units": 2013}, {"name": "Coin Toggle Necklace", "units": 943}, {"name": "Double Link Chain Bracelet", "units": 818}, {"name": "Mini Margaret Necklace", "units": 797}, {"name": "Heart Toggle Necklace", "units": 708}, {"name": "Mixed Metal Cross Toggle Bracelet", "units": 479}], "$120-200": [{"name": "Cross Toggle Necklace", "units": 1027}, {"name": "Multi Strand Turquoise + Coin Necklace", "units": 475}, {"name": "Coin Toggle Necklace", "units": 458}, {"name": "Venetian Glass Bee Necklace", "units": 458}, {"name": "Double Link Chain Necklace", "units": 426}, {"name": "Mini Margaret Necklace", "units": 386}], "$200+": [{"name": "Pearl Cross Multi-Strand Necklace", "units": 125}, {"name": "Multi Strand Turquoise + Coin Necklace", "units": 89}, {"name": "Pearl Cab Multi-Strand Pearl Necklace", "units": 80}, {"name": "Diana Triple Strand Choker Necklace", "units": 68}, {"name": "Margaret Necklace", "units": 66}, {"name": "Cotton Pearl Link Necklace", "units": 32}]}, "region": [{"region": "Midwest", "orders": 3790, "avg_price": 62.65, "avg_disc": 0.128, "pct_disc": 0.6989, "net_sales": 546381.66}, {"region": "Northeast", "orders": 3641, "avg_price": 61.39, "avg_disc": 0.122, "pct_disc": 0.7017, "net_sales": 496143.17}, {"region": "South", "orders": 48139, "avg_price": 61.12, "avg_disc": 0.1307, "pct_disc": 0.7096, "net_sales": 6917263.52}, {"region": "West", "orders": 3228, "avg_price": 63.02, "avg_disc": 0.117, "pct_disc": 0.6636, "net_sales": 477617.19}], "channel": [{"channel": "direct", "orders": 14761, "avg_price": 61.63, "avg_disc": 0.1359, "pct_disc": 0.6756, "net_sales": 2220800.84}, {"channel": "google", "orders": 12684, "avg_price": 62.2, "avg_disc": 0.1097, "pct_disc": 0.6002, "net_sales": 1801286.43}, {"channel": "facebook", "orders": 12032, "avg_price": 58.01, "avg_disc": 0.1398, "pct_disc": 0.8235, "net_sales": 1635670.88}, {"channel": "klaviyo", "orders": 6665, "avg_price": 61.52, "avg_disc": 0.1354, "pct_disc": 0.7236, "net_sales": 1020950.14}, {"channel": "instagram", "orders": 5847, "avg_price": 58.88, "avg_disc": 0.1372, "pct_disc": 0.8033, "net_sales": 795125.43}, {"channel": "unattributed", "orders": 979, "avg_price": 62.06, "avg_disc": 0.0898, "pct_disc": 0.5342, "net_sales": 130354.17}, {"channel": "bing", "orders": 664, "avg_price": 62.11, "avg_disc": 0.1256, "pct_disc": 0.6747, "net_sales": 102786.48}, {"channel": "capitaloneshopping", "orders": 442, "avg_price": 62.01, "avg_disc": 0.1697, "pct_disc": 0.9118, "net_sales": 66810.28}], "age": [{"age": "16-18", "units": 170, "avg_price": 89.65, "avg_disc": 0.1014, "pct_disc": 0.5439}, {"age": "19-22", "units": 570, "avg_price": 86.81, "avg_disc": 0.1503, "pct_disc": 0.6567}, {"age": "23-29", "units": 776, "avg_price": 87.52, "avg_disc": 0.1439, "pct_disc": 0.6306}, {"age": "30-39", "units": 1071, "avg_price": 85.36, "avg_disc": 0.1492, "pct_disc": 0.6569}, {"age": "40-49", "units": 3157, "avg_price": 86.2, "avg_disc": 0.1605, "pct_disc": 0.7021}, {"age": "50-59", "units": 9106, "avg_price": 87.92, "avg_disc": 0.1663, "pct_disc": 0.726}, {"age": "60-69", "units": 9997, "avg_price": 89.0, "avg_disc": 0.1585, "pct_disc": 0.7132}, {"age": "70-79", "units": 7007, "avg_price": 88.36, "avg_disc": 0.1477, "pct_disc": 0.6834}, {"age": "80-89", "units": 1044, "avg_price": 88.36, "avg_disc": 0.1363, "pct_disc": 0.6497}, {"age": "90+", "units": 42, "avg_price": 79.26, "avg_disc": 0.1412, "pct_disc": 0.55}], "age_bin_pct": {"16-18": {"Under $40": 0.0059, "$40-65": 0.2529, "$65-90": 0.2941, "$90-120": 0.2471, "$120-200": 0.1882, "$200+": 0.0118}, "19-22": {"Under $40": 0.0561, "$40-65": 0.2526, "$65-90": 0.2544, "$90-120": 0.2526, "$120-200": 0.1807, "$200+": 0.0035}, "23-29": {"Under $40": 0.0515, "$40-65": 0.2616, "$65-90": 0.2513, "$90-120": 0.268, "$120-200": 0.1649, "$200+": 0.0026}, "30-39": {"Under $40": 0.0616, "$40-65": 0.3016, "$65-90": 0.2558, "$90-120": 0.2185, "$120-200": 0.1587, "$200+": 0.0037}, "40-49": {"Under $40": 0.0497, "$40-65": 0.3028, "$65-90": 0.243, "$90-120": 0.2426, "$120-200": 0.1558, "$200+": 0.006}, "50-59": {"Under $40": 0.0502, "$40-65": 0.2715, "$65-90": 0.2502, "$90-120": 0.2613, "$120-200": 0.1601, "$200+": 0.0068}, "60-69": {"Under $40": 0.0454, "$40-65": 0.2808, "$65-90": 0.2441, "$90-120": 0.2544, "$120-200": 0.1666, "$200+": 0.0087}, "70-79": {"Under $40": 0.0464, "$40-65": 0.2874, "$65-90": 0.2472, "$90-120": 0.2523, "$120-200": 0.1574, "$200+": 0.0093}, "80-89": {"Under $40": 0.045, "$40-65": 0.2634, "$65-90": 0.2557, "$90-120": 0.2567, "$120-200": 0.1715, "$200+": 0.0077}, "90+": {"Under $40": 0.0238, "$40-65": 0.4048, "$65-90": 0.2381, "$90-120": 0.2143, "$120-200": 0.119, "$200+": 0.0}}, "reg_bin_pct": {"Midwest": {"Under $40": 0.1794, "$40-65": 0.4507, "$65-90": 0.2346, "$90-120": 0.095, "$120-200": 0.0388, "$200+": 0.0016}, "Northeast": {"Under $40": 0.2032, "$40-65": 0.4534, "$65-90": 0.2131, "$90-120": 0.0912, "$120-200": 0.0385, "$200+": 0.0005}, "South": {"Under $40": 0.1955, "$40-65": 0.4638, "$65-90": 0.2236, "$90-120": 0.0821, "$120-200": 0.0341, "$200+": 0.0009}, "West": {"Under $40": 0.1822, "$40-65": 0.4303, "$65-90": 0.2519, "$90-120": 0.0979, "$120-200": 0.0353, "$200+": 0.0025}}, "ch_bin_pct": {"direct": {"Under $40": 0.1774, "$40-65": 0.4683, "$65-90": 0.2342, "$90-120": 0.086, "$120-200": 0.0335, "$200+": 0.0007}, "facebook": {"Under $40": 0.2435, "$40-65": 0.466, "$65-90": 0.1966, "$90-120": 0.0687, "$120-200": 0.0246, "$200+": 0.0006}, "google": {"Under $40": 0.182, "$40-65": 0.4521, "$65-90": 0.2431, "$90-120": 0.0844, "$120-200": 0.0371, "$200+": 0.0013}, "instagram": {"Under $40": 0.2242, "$40-65": 0.4838, "$65-90": 0.1854, "$90-120": 0.0799, "$120-200": 0.0262, "$200+": 0.0005}, "klaviyo": {"Under $40": 0.1709, "$40-65": 0.4804, "$65-90": 0.2375, "$90-120": 0.0801, "$120-200": 0.0299, "$200+": 0.0012}}, "nr_bin_pct": {"New": {"Under $40": 0.1858, "$40-65": 0.475, "$65-90": 0.2206, "$90-120": 0.0859, "$120-200": 0.0319, "$200+": 0.0008}, "Returning": {"Under $40": 0.2054, "$40-65": 0.4408, "$65-90": 0.2312, "$90-120": 0.0826, "$120-200": 0.0387, "$200+": 0.0013}}, "nr_counts": {"New": 33627, "Returning": 25324}, "monthly_labels": ["2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05"], "monthly_avg_price": [62.63, 62.52, 60.6, 59.09, 56.67, 61.01, 63.45, 63.49, 63.26, 65.43], "monthly_pct_disc": [0.5799, 0.6527, 0.6358, 0.8987, 0.5917, 0.6378, 0.6993, 0.5823, 0.7931, 0.626], "monthly_orders": [3090, 4918, 4921, 12305, 6779, 4528, 4888, 4791, 8022, 4709], "monthly_bin_pct": {"Under $40": [0.167, 0.1747, 0.2445, 0.1401, 0.2906, 0.2361, 0.1837, 0.1981, 0.1776, 0.178], "$40-65": [0.4858, 0.4569, 0.404, 0.595, 0.4228, 0.3971, 0.4339, 0.4062, 0.4343, 0.3958], "$65-90": [0.2184, 0.2375, 0.2197, 0.184, 0.1987, 0.2394, 0.2418, 0.2475, 0.2569, 0.2601], "$90-120": [0.0922, 0.0919, 0.0894, 0.065, 0.0594, 0.0866, 0.0933, 0.1016, 0.0914, 0.1128], "$120-200": [0.0356, 0.0382, 0.0421, 0.0152, 0.028, 0.04, 0.0468, 0.0451, 0.0383, 0.0505], "$200+": [0.001, 0.0008, 0.0004, 0.0007, 0.0004, 0.0009, 0.0004, 0.0015, 0.0015, 0.0028]}, "survey_coverage": 0.3587, "date_range": "Aug 15, 2025 - May 27, 2026", "labels": ["Under $40", "$40-65", "$65-90", "$90-120", "$120-200", "$200+"]};
+
+const BIN_COLORS = ['#B8A98C','#5A8A7A','#C9A84C','#6B7F8A','#C4846A','#3D3328'];
+const LABELS = D.labels;
+const charts = {};
+
+const CFG = {
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: '#1A1510',
+      titleColor: '#C9A84C',
+      bodyColor: '#E8D5A0',
+      borderColor: '#C9A84C',
+      borderWidth: 0.5,
+      titleFont: { family: 'DM Mono', size: 11 },
+      bodyFont: { family: 'DM Mono', size: 11 },
+      padding: 10
+    }
+  },
+  scales: {
+    x: { grid: { color: '#E8E0D4', drawBorder: false }, ticks: { font: { family: 'DM Mono', size: 11 }, color: '#7A6B55' }, border: { color: '#D4C9B8' } },
+    y: { grid: { color: '#E8E0D4', drawBorder: false }, ticks: { font: { family: 'DM Mono', size: 11 }, color: '#7A6B55' }, border: { color: '#D4C9B8' } }
+  },
+  animation: { duration: 500 },
+  maintainAspectRatio: false
+};
+
+function fmtDollar(v) { return '$' + v.toLocaleString('en-US', {maximumFractionDigits:0}); }
+function fmtPct(v) { return (v*100).toFixed(1)+'%'; }
+function fmtAvgPrice(v) { return '$' + v.toFixed(2); }
+
+function mkChart(id, type, labels, datasets, extra={}) {
+  if (charts[id]) { charts[id].destroy(); }
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  charts[id] = new Chart(ctx, {
+    type, data: { labels, datasets },
+    options: Object.assign({}, JSON.parse(JSON.stringify(CFG)), extra)
+  });
+}
+
+// ---- TAB 1 ----
+function buildOverview() {
+  const k = D.kpis;
+  const kpiData = [
+    { label: 'Total Orders', value: k.total_orders.toLocaleString(), sub: 'Aug 15, 2025 – May 27, 2026' },
+    { label: 'Avg Order Value (After Discount)', value: fmtDollar(k.avg_order_value), sub: 'Post-promotion net' },
+    { label: 'Avg Order Value (Before Discount)', value: fmtDollar(k.gross_aov), sub: 'Pre-promotion gross' },
+    { label: 'Overall Discount Rate', value: fmtPct(k.overall_disc_rate), sub: 'Mean across all orders' },
+    { label: '% Orders Discounted', value: fmtPct(k.pct_discounted), sub: k.any_disc_orders.toLocaleString()+' of '+k.total_orders.toLocaleString() },
+    { label: 'Unique Customers', value: k.unique_customers.toLocaleString(), sub: '57% new customers' }
+  ];
+  const grid = document.getElementById('kpi-grid');
+  grid.innerHTML = kpiData.map(d => `<div class="kpi-card"><div class="kpi-label">${d.label}</div><div class="kpi-value">${d.value}</div><div class="kpi-sub">${d.sub}</div></div>`).join('');
+
+  mkChart('chartOrdersBin','bar', LABELS,
+    [{ data: D.bin_orders.map(b=>b.pct_orders*100), backgroundColor: BIN_COLORS, borderRadius:0, borderWidth:0 }],
+    { plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx=>`${ctx.parsed.y.toFixed(1)}% of orders` },...CFG.plugins.tooltip } }, scales: CFG.scales }
+  );
+
+  mkChart('chartDiscBin','bar', LABELS,
+    [{ data: D.bin_orders.map(b=>b.avg_disc*100), backgroundColor: BIN_COLORS, borderRadius:0, borderWidth:0 }],
+    { plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx=>`${ctx.parsed.y.toFixed(1)}% avg discount` },...CFG.plugins.tooltip } }, scales: CFG.scales }
+  );
+
+  // Gauge bars
+  const maxDisc = Math.max(...D.bin_orders.map(b=>b.pct_disc));
+  document.getElementById('gaugeDiscPct').innerHTML = D.bin_orders.map((b,i)=>`
+    <li class="gauge-item">
+      <div class="gauge-header"><span>${b.bin}</span><span>${fmtPct(b.pct_disc)}</span></div>
+      <div class="gauge-track"><div class="gauge-fill" style="width:${(b.pct_disc/maxDisc*100).toFixed(1)}%;background:${BIN_COLORS[i]}"></div></div>
+    </li>`).join('');
+
+  // New vs returning
+  const nrLabels = ['New','Returning'];
+  const nrLegend = document.getElementById('legendNR');
+  nrLegend.innerHTML = LABELS.map((l,i)=>`<div class="legend-item"><div class="legend-dot" style="background:${BIN_COLORS[i]}"></div>${l}</div>`).join('');
+  const nrDatasets = LABELS.map((l,i)=>({
+    label:l, data: nrLabels.map(t=>(D.nr_bin_pct[t][l]*100).toFixed(1)),
+    backgroundColor:BIN_COLORS[i], borderWidth:0
+  }));
+  mkChart('chartNR','bar',nrLabels,nrDatasets,{
+    plugins:{legend:{display:false},tooltip:{...CFG.plugins.tooltip}},
+    scales:{ x:{ ...CFG.scales.x, stacked:true }, y:{ ...CFG.scales.y, stacked:true, ticks:{...CFG.scales.y.ticks, callback:v=>v+'%'} } },
+    indexAxis:'y'
+  });
+
+  // Insight
+  const topBin = D.bin_orders.reduce((a,b)=>b.pct_orders>a.pct_orders?b:a);
+  const premBin = D.bin_orders.find(b=>b.bin==='$120-200');
+  const highestDisc = D.bin_orders.reduce((a,b)=>b.pct_disc>a.pct_disc?b:a);
+  document.getElementById('insightOverview').innerHTML = `The <strong>${topBin.bin}</strong> tier dominates the order mix at <strong>${fmtPct(topBin.pct_orders)}</strong> of all orders, generating <strong>${fmtDollar(topBin.net_sales)}</strong> in net sales. The <strong>${highestDisc.bin}</strong> tier sees the highest share of discounted orders at <strong>${fmtPct(highestDisc.pct_disc)}</strong>. Premium tiers ($120-200+) show lower discount dependency — only <strong>${fmtPct(premBin.pct_disc)}</strong> of $120-200 orders are discounted, suggesting customers in that range are buying on brand intent rather than promotional pressure. New customers skew slightly more toward the $40-65 core tier than returning customers do.`;
+}
+
+// ---- TAB 2 ----
+function buildBins() {
+  mkChart('chartProdSales','bar', LABELS,
+    [{ data: D.bin_products.map(b=>b.net_sales), backgroundColor: BIN_COLORS, borderRadius:0, borderWidth:0 }],
+    { plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmtDollar(ctx.parsed.y)},...CFG.plugins.tooltip}}, scales:{...CFG.scales,y:{...CFG.scales.y,ticks:{...CFG.scales.y.ticks,callback:v=>'$'+(v/1000).toFixed(0)+'K'}}} }
+  );
+  mkChart('chartProdUnits','bar', LABELS,
+    [{ data: D.bin_products.map(b=>b.units), backgroundColor: BIN_COLORS, borderRadius:0, borderWidth:0 }],
+    { plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toLocaleString()+' units'},...CFG.plugins.tooltip}}, scales:CFG.scales }
+  );
+
+  // Tier selector
+  const btnContainer = document.getElementById('tierBtns');
+  btnContainer.innerHTML = LABELS.map((l,i)=>`<button class="sel-btn${i===3?' active':''}" onclick="selectTier('${l}',this)">${l}</button>`).join('');
+  renderProdDrill('$90-120');
+
+  // Product disc gauges
+  const maxD = Math.max(...D.bin_products.map(b=>b.avg_disc));
+  document.getElementById('gaugeProdDisc').innerHTML = D.bin_products.map((b,i)=>`
+    <li class="gauge-item">
+      <div class="gauge-header"><span>${b.bin}</span><span>${fmtPct(b.avg_disc)}</span></div>
+      <div class="gauge-track"><div class="gauge-fill" style="width:${(b.avg_disc/maxD*100).toFixed(1)}%;background:${BIN_COLORS[i]}"></div></div>
+    </li>`).join('');
+
+  const underDisc = D.bin_products[0].avg_disc;
+  const premDisc = D.bin_products[4].avg_disc;
+  document.getElementById('insightBins').innerHTML = `There is a pronounced inverse relationship between price and discount depth. The <strong>Under $40</strong> tier carries an average discount rate of <strong>${fmtPct(underDisc)}</strong> — nearly <strong>${(underDisc/premDisc).toFixed(1)}x</strong> the rate of the $120-200 tier at <strong>${fmtPct(premDisc)}</strong>. This means entry-level customers are the most promotion-dependent, while premium buyers need the least incentive. The Cross Toggle Necklace appears across three consecutive tiers ($65-90, $90-120, $120-200) as a top product, indicating it spans a wide price range depending on configuration — worth monitoring for pricing consistency.`;
+
+  // Top 25 horizontal bar chart
+  const t25names = TOP25.map(p => p.name.length > 40 ? p.name.slice(0,38)+'…' : p.name).reverse();
+  const t25vals = TOP25.map(p => +(p.pct_disc*100).toFixed(1)).reverse();
+  const t25colors = TOP25.map(p => {
+    const v = p.pct_disc;
+    if (v >= 0.85) return '#C4846A';
+    if (v >= 0.80) return '#C9A84C';
+    return '#5A8A7A';
+  }).reverse();
+  mkChart('chartTop25Disc','bar', t25names, [{
+    data: t25vals, backgroundColor: t25colors, borderRadius: 0, borderWidth: 0
+  }], {
+    indexAxis: 'y',
+    plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx=>`${ctx.parsed.x.toFixed(1)}% of transactions discounted` }, ...CFG.plugins.tooltip } },
+    scales: {
+      x: { ...CFG.scales.x, ticks:{...CFG.scales.x.ticks, callback: v=>v+'%'}, max:100 },
+      y: { ...CFG.scales.y, ticks:{...CFG.scales.y.ticks, font:{family:'DM Mono',size:10}} }
+    }
+  });
+
+  // Top 25 table
+  document.getElementById('tableTop25').innerHTML =
+    `<thead><tr><th>#</th><th>Product</th><th>% Txns Discounted</th><th>Avg Disc Rate</th><th>Total Units</th><th>Avg Unit Price</th></tr></thead><tbody>` +
+    TOP25.map((p,i) => `<tr><td class="mono">${i+1}</td><td>${p.name}</td><td class="mono">${fmtPct(p.pct_disc)}</td><td class="mono">${fmtPct(p.avg_disc_rate)}</td><td class="mono">${p.total_units.toLocaleString()}</td><td class="mono">${fmtAvgPrice(p.avg_price)}</td></tr>`).join('') +
+    '</tbody>';
+
+  const highVol = TOP25.filter(p=>p.total_units>=100);
+  document.getElementById('insightTop25').innerHTML = `These 25 products are the most promotion-conditioned in the catalog — customers almost never buy them at full price. Note that most are low-to-mid volume, meaning the discount rate reflects habitual clearance or sale behavior rather than broad demand. <strong>${highVol.map(p=>p.name).join(', ')}</strong> ${highVol.length > 1 ? 'stand out as' : 'stands out as'} the only higher-volume product${highVol.length > 1 ? 's' : ''} in this group — meaning a meaningful number of customers have been trained to expect a discount before purchasing ${highVol.length > 1 ? 'them' : 'it'}. These products are strong candidates for pricing strategy review: either accept their promotional role, phase them out of the main catalog, or test full-price campaigns to gauge true demand.`;
+
+  // Bottom 25 chart
+  const b25names = BOT25.map(p => p.name.length > 40 ? p.name.slice(0,38)+'…' : p.name).reverse();
+  const b25vals = BOT25.map(p => +(p.pct_disc*100).toFixed(1)).reverse();
+  const b25colors = BOT25.map(p => {
+    const v = p.pct_disc;
+    if (v <= 0.20) return '#5A8A7A';
+    if (v <= 0.35) return '#C9A84C';
+    return '#6B7F8A';
+  }).reverse();
+  mkChart('chartBot25Disc','bar', b25names, [{
+    data: b25vals, backgroundColor: b25colors, borderRadius: 0, borderWidth: 0
+  }], {
+    indexAxis: 'y',
+    plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx=>`${ctx.parsed.x.toFixed(1)}% of transactions discounted` }, ...CFG.plugins.tooltip } },
+    scales: {
+      x: { ...CFG.scales.x, ticks:{...CFG.scales.x.ticks, callback: v=>v+'%'}, max:100 },
+      y: { ...CFG.scales.y, ticks:{...CFG.scales.y.ticks, font:{family:'DM Mono',size:10}} }
+    }
+  });
+
+  // Bottom 25 table
+  document.getElementById('tableBot25').innerHTML =
+    `<thead><tr><th>#</th><th>Product</th><th>% Txns Discounted</th><th>Avg Disc Rate</th><th>Total Units</th><th>Avg Unit Price</th></tr></thead><tbody>` +
+    BOT25.map((p,i) => `<tr><td class="mono">${i+1}</td><td>${p.name}</td><td class="mono">${fmtPct(p.pct_disc)}</td><td class="mono">${fmtPct(p.avg_disc_rate)}</td><td class="mono">${p.total_units.toLocaleString()}</td><td class="mono">${fmtAvgPrice(p.avg_price)}</td></tr>`).join('') +
+    '</tbody>';
+
+  const b25HighVol = BOT25.filter(p=>p.total_units>=50);
+  document.getElementById('insightBot25').innerHTML = `These products are the most price-resilient in the catalog — customers buy them without waiting for a promotion. The <strong>USA 250 Pearl Necklace</strong> stands alone at only <strong>${fmtPct(BOT25[0].pct_disc)}</strong> of transactions discounted, making it the single strongest full-price performer. The <strong>Small Mother of Pearl Cross</strong> family (Jane, Katie, Paperclip variants) appears three times, indicating this collection has genuine demand that is not discount-driven. Higher-volume full-price performers — <strong>${b25HighVol.map(p=>p.name).join(', ')}</strong> — are strong candidates for featuring in paid campaigns or evergreen content since they convert without promotional pressure.`;
+}
+
+function selectTier(bin, btn) {
+  document.querySelectorAll('#tierBtns .sel-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProdDrill(bin);
+}
+
+function renderProdDrill(bin) {
+  const prods = D.top_products[bin] || [];
+  const maxU = prods.length ? prods[0].units : 1;
+  document.getElementById('prodDrillDown').innerHTML = prods.map((p,i)=>`
+    <div class="prod-item">
+      <span class="prod-rank">${i+1}</span>
+      <span class="prod-name">${p.name}</span>
+      <div class="prod-bar-wrap"><div class="prod-bar-track"><div class="prod-bar-fill" style="width:${(p.units/maxU*100).toFixed(0)}%"></div></div></div>
+      <span class="prod-units">${p.units.toLocaleString()}</span>
+    </div>`).join('');
+}
+
+// ---- TAB 3 ----
+function buildDiscount() {
+  const ages = D.age.map(a=>a.age);
+  const goldBar = { backgroundColor: '#C9A84C', borderRadius:0, borderWidth:0 };
+  const tealBar = { backgroundColor: '#5A8A7A', borderRadius:0, borderWidth:0 };
+
+  mkChart('chartAgeDiscRate','bar',ages,[{...goldBar, data:D.age.map(a=>+(a.avg_disc*100).toFixed(2))}],
+    {plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toFixed(1)+'%'},...CFG.plugins.tooltip}},scales:{...CFG.scales,y:{...CFG.scales.y,ticks:{...CFG.scales.y.ticks,callback:v=>v+'%'}}}});
+  mkChart('chartAgePctDisc','bar',ages,[{...tealBar, data:D.age.map(a=>+(a.pct_disc*100).toFixed(2))}],
+    {plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toFixed(1)+'%'},...CFG.plugins.tooltip}},scales:{...CFG.scales,y:{...CFG.scales.y,ticks:{...CFG.scales.y.ticks,callback:v=>v+'%'}}}});
+
+  document.getElementById('tableAge').innerHTML = `<thead><tr><th>Age Group</th><th>Units</th><th>Avg Unit Price</th><th>Avg Disc Rate</th><th>% Discounted</th></tr></thead><tbody>`
+    + D.age.map(a=>`<tr><td class="mono">${a.age}</td><td class="mono">${a.units.toLocaleString()}</td><td class="mono">${fmtAvgPrice(a.avg_price)}</td><td class="mono">${fmtPct(a.avg_disc)}</td><td class="mono">${fmtPct(a.pct_disc)}</td></tr>`).join('') + '</tbody>';
+
+  const peak = D.age.reduce((a,b)=>b.avg_disc>a.avg_disc?b:a);
+  document.getElementById('insightAge').innerHTML = `Discount sensitivity peaks in the <strong>${peak.age}</strong> age bracket at <strong>${fmtPct(peak.avg_disc)}</strong> average discount rate and <strong>${fmtPct(peak.pct_disc)}</strong> of units discounted. The 60-69 core customer actually tolerates slightly lower average discount rates than 50-59, while commanding a marginally higher average unit price of <strong>$${D.age.find(a=>a.age==='60-69').avg_price}</strong>. Younger customers (19-39) show lower absolute discount rates but also lower average unit prices, suggesting they are not less price-sensitive overall — they simply shop lower tiers.`;
+
+  // Region
+  const regs = D.region.map(r=>r.region);
+  mkChart('chartRegDiscRate','bar',regs,[{...goldBar, data:D.region.map(r=>+(r.avg_disc*100).toFixed(2))}],
+    {plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toFixed(1)+'%'},...CFG.plugins.tooltip}},scales:{...CFG.scales,y:{...CFG.scales.y,ticks:{...CFG.scales.y.ticks,callback:v=>v+'%'}}}});
+  mkChart('chartRegPctDisc','bar',regs,[{...tealBar, data:D.region.map(r=>+(r.pct_disc*100).toFixed(2))}],
+    {plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toFixed(1)+'%'},...CFG.plugins.tooltip}},scales:{...CFG.scales,y:{...CFG.scales.y,ticks:{...CFG.scales.y.ticks,callback:v=>v+'%'}}}});
+  document.getElementById('tableReg').innerHTML = `<thead><tr><th>Region</th><th>Orders</th><th>Net Sales</th><th>Avg Price</th><th>Avg Disc Rate</th><th>% Discounted</th></tr></thead><tbody>`
+    + D.region.map(r=>`<tr><td>${r.region}</td><td class="mono">${r.orders.toLocaleString()}</td><td class="mono">${fmtDollar(r.net_sales)}</td><td class="mono">${fmtAvgPrice(r.avg_price)}</td><td class="mono">${fmtPct(r.avg_disc)}</td><td class="mono">${fmtPct(r.pct_disc)}</td></tr>`).join('') + '</tbody>';
+
+  const southReg = D.region.find(r=>r.region==='South');
+  const westReg = D.region.find(r=>r.region==='West');
+  document.getElementById('insightReg').innerHTML = `The <strong>South</strong> drives <strong>${fmtDollar(southReg.net_sales)}</strong> in net sales — roughly 82% of total — reflecting Susan Shaw's core geographic concentration. The <strong>West</strong> shows the lowest discount rate at <strong>${fmtPct(westReg.avg_disc)}</strong> and the lowest share of discounted orders at <strong>${fmtPct(westReg.pct_disc)}</strong>, suggesting less promotional conditioning in a smaller but potentially more full-price audience. Regional average prices are remarkably tight across all four regions, spanning only about $2 — indicating price preferences are product-driven rather than regionally specific.`;
+
+  // Channel
+  const chs = D.channel.map(c=>c.channel);
+  mkChart('chartChDiscRate','bar',chs,[{...goldBar, data:D.channel.map(c=>+(c.avg_disc*100).toFixed(2))}],
+    {plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toFixed(1)+'%'},...CFG.plugins.tooltip}},scales:{...CFG.scales,x:{...CFG.scales.x,ticks:{...CFG.scales.x.ticks,maxRotation:35}},y:{...CFG.scales.y,ticks:{...CFG.scales.y.ticks,callback:v=>v+'%'}}}});
+  mkChart('chartChPctDisc','bar',chs,[{...tealBar, data:D.channel.map(c=>+(c.pct_disc*100).toFixed(2))}],
+    {plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toFixed(1)+'%'},...CFG.plugins.tooltip}},scales:{...CFG.scales,x:{...CFG.scales.x,ticks:{...CFG.scales.x.ticks,maxRotation:35}},y:{...CFG.scales.y,ticks:{...CFG.scales.y.ticks,callback:v=>v+'%'}}}});
+  document.getElementById('tableCh').innerHTML = `<thead><tr><th>Channel</th><th>Orders</th><th>Net Sales</th><th>Avg Price</th><th>Avg Disc Rate</th><th>% Discounted</th></tr></thead><tbody>`
+    + D.channel.map(c=>`<tr><td class="mono">${c.channel}</td><td class="mono">${c.orders.toLocaleString()}</td><td class="mono">${fmtDollar(c.net_sales)}</td><td class="mono">${fmtAvgPrice(c.avg_price)}</td><td class="mono">${fmtPct(c.avg_disc)}</td><td class="mono">${fmtPct(c.pct_disc)}</td></tr>`).join('') + '</tbody>';
+
+  const fbCh = D.channel.find(c=>c.channel==='facebook');
+  const igCh = D.channel.find(c=>c.channel==='instagram');
+  const googCh = D.channel.find(c=>c.channel==='google');
+  const capCh = D.channel.find(c=>c.channel==='capitaloneshopping');
+  document.getElementById('insightCh').innerHTML = `<strong>Facebook</strong> and <strong>Instagram</strong> are the most discount-conditioned channels — <strong>${fmtPct(fbCh.pct_disc)}</strong> and <strong>${fmtPct(igCh.pct_disc)}</strong> of their orders are discounted, respectively. This creates a structural risk: paid social audiences are being trained to expect promotions. <strong>Google</strong> is meaningfully healthier — only <strong>${fmtPct(googCh.pct_disc)}</strong> of orders are discounted and it carries the lowest average discount rate among major channels at <strong>${fmtPct(googCh.avg_disc)}</strong>. <strong>Capital One Shopping</strong> at <strong>${fmtPct(capCh.pct_disc)}</strong> discounted is a coupon-aggregator signal worth monitoring — these customers are explicitly deal-hunting.`;
+}
+
+// ---- TAB 4 ----
+function buildAffinity() {
+  const legend = LABELS.map((l,i)=>`<div class="legend-item"><div class="legend-dot" style="background:${BIN_COLORS[i]}"></div>${l}</div>`).join('');
+  ['legendAffinity'].forEach(id=>{ document.getElementById(id).innerHTML = legend; });
+
+  function makeAffinityDatasets(obj) {
+    return LABELS.map((l,i)=>({
+      label: l,
+      data: Object.keys(obj).map(k=>(obj[k][l]*100).toFixed(2)),
+      backgroundColor: BIN_COLORS[i],
+      borderWidth: 0
+    }));
+  }
+  const stackedOpts = {
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.x.toFixed(1)}%`},...CFG.plugins.tooltip}},
+    indexAxis:'y',
+    scales:{
+      x:{ ...CFG.scales.x, stacked:true, ticks:{...CFG.scales.x.ticks,callback:v=>v+'%'}, max:100 },
+      y:{ ...CFG.scales.y, stacked:true }
+    }
+  };
+
+  mkChart('chartAffinityAge','bar', Object.keys(D.age_bin_pct), makeAffinityDatasets(D.age_bin_pct), stackedOpts);
+  mkChart('chartAffinityReg','bar', Object.keys(D.reg_bin_pct), makeAffinityDatasets(D.reg_bin_pct), stackedOpts);
+  mkChart('chartAffinityCh','bar', Object.keys(D.ch_bin_pct), makeAffinityDatasets(D.ch_bin_pct), stackedOpts);
+
+  document.getElementById('insightAffinityAge').innerHTML = `Age affinity patterns are surprisingly consistent across the 40-89 core range — the $90-120 tier maintains roughly 25% unit share across all groups. The 60-69 cohort shows the lowest entry-level (<$40) share at <strong>5.5%</strong> and the highest $120-200 representation at <strong>16.5%</strong> — they are the best full-price, premium buyers. Younger customers (23-39) have 15-16% premium tier share despite lower overall spend, suggesting aspirational purchasing behavior that could be cultivated.`;
+  document.getElementById('insightAffinityReg').innerHTML = `Regional affinity patterns are tight. The <strong>West</strong> shows the strongest $65-90 presence at <strong>25.2%</strong> and somewhat lower $40-65 dependency. The <strong>South</strong> leans most heavily on the $40-65 tier at <strong>46.4%</strong>, consistent with its higher discount rate — promotional campaigns in the South are landing most in the accessible mid tier.`;
+  document.getElementById('insightAffinityCh').innerHTML = `<strong>Facebook</strong> and <strong>Instagram</strong> audiences are the most entry-heavy, with 24.4% and 22.4% of orders in the Under $40 tier respectively — higher than any other channel. <strong>Klaviyo</strong> and <strong>Direct</strong> show the best premium representation and the lowest entry-level share, reinforcing that house-list customers buy with intent. Google sits in the middle, with good $65-90 representation at <strong>24.3%</strong> — these are likely higher-intent search shoppers.`;
+}
+
+// ---- TAB 5 ----
+function buildTrends() {
+  const legend = LABELS.map((l,i)=>`<div class="legend-item"><div class="legend-dot" style="background:${BIN_COLORS[i]}"></div>${l}</div>`).join('');
+  document.getElementById('legendTrends').innerHTML = legend;
+
+  const months = D.monthly_labels.map(m=>{
+    const [y,mo] = m.split('-');
+    return ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(mo)] + ' ' + y.slice(2);
+  });
+
+  const binDatasets = LABELS.map((l,i)=>({
+    label:l, data: D.monthly_bin_pct[l].map(v=>(v*100).toFixed(2)),
+    backgroundColor:BIN_COLORS[i], borderWidth:0
+  }));
+  mkChart('chartTrendBins','bar',months,binDatasets,{
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${parseFloat(ctx.parsed.y).toFixed(1)}%`},...CFG.plugins.tooltip}},
+    scales:{
+      x:{ ...CFG.scales.x, stacked:true },
+      y:{ ...CFG.scales.y, stacked:true, ticks:{...CFG.scales.y.ticks,callback:v=>v+'%'}, max:100 }
+    }
+  });
+
+  mkChart('chartTrendPrice','line',months,[{
+    data:D.monthly_avg_price, borderColor:'#C9A84C', backgroundColor:'rgba(201,168,76,0.08)',
+    pointBackgroundColor:'#C9A84C', pointRadius:4, pointHoverRadius:6, tension:0.3, fill:true, borderWidth:2
+  }],{
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'$'+ctx.parsed.y.toFixed(2)},...CFG.plugins.tooltip}},
+    scales:{...CFG.scales,y:{...CFG.scales.y,ticks:{...CFG.scales.y.ticks,callback:v=>'$'+v}}}
+  });
+
+  mkChart('chartTrendDisc','line',months,[{
+    data:D.monthly_pct_disc.map(v=>(v*100).toFixed(1)), borderColor:'#C4846A', backgroundColor:'rgba(196,132,106,0.08)',
+    pointBackgroundColor:'#C4846A', pointRadius:4, pointHoverRadius:6, tension:0.3, fill:true, borderWidth:2
+  }],{
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toFixed(1)+'%'},...CFG.plugins.tooltip}},
+    scales:{...CFG.scales,y:{...CFG.scales.y,ticks:{...CFG.scales.y.ticks,callback:v=>v+'%'}}}
+  });
+
+  const maxPrice = Math.max(...D.monthly_avg_price);
+  const minPrice = Math.min(...D.monthly_avg_price);
+  const maxPriceMonth = months[D.monthly_avg_price.indexOf(maxPrice)];
+  const minPriceMonth = months[D.monthly_avg_price.indexOf(minPrice)];
+  const nov = months.indexOf('Nov 25') >= 0 ? 'Nov 25' : months[3];
+  const novDisc = fmtPct(D.monthly_pct_disc[3]);
+  document.getElementById('insightTrends').innerHTML = `Average unit price has trended upward from a December trough of <strong>$${minPrice}</strong> to a recent high of <strong>$${maxPrice}</strong> in May 2026 — a positive signal of trading-up behavior as the period progresses. November 2025 stands out as an outlier: discount rate spiked to <strong>${novDisc}</strong> (likely Black Friday/Cyber Monday volume) while average order price compressed to <strong>$${D.monthly_avg_price[3]}</strong> — consistent with heavy promotional volume pulling the mix toward the $40-65 tier at <strong>${fmtPct(D.monthly_bin_pct['$40-65'][3])}</strong>. The $65-90 and $90-120 tiers have been quietly gaining share from March through May 2026, suggesting customers acquired post-promotion may be upgrading on repeat purchase.`;
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='bins' && !charts['chartProdSales']) buildBins();
+  if(name==='discount' && !charts['chartAgeDiscRate']) buildDiscount();
+  if(name==='affinity' && !charts['chartAffinityAge']) buildAffinity();
+  if(name==='trends' && !charts['chartTrendBins']) buildTrends();
+}
+
+// Init
+buildOverview();
+// Pre-build bins tab so selector works
+</script>
+</body>
+</html>
