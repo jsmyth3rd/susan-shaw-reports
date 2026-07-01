@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Susan Shaw — June 2026 Performance Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --gold:#C9A84C; --gold-light:#E8D5A0; --gold-pale:#F5EDD8;
+  --cream:#FAF7F2; --ink:#1A1510; --ink-mid:#3D3328; --ink-light:#7A6B55; --ink-faint:#B8A98C;
+  --stone:#E8E0D4; --stone-dark:#D4C9B8; --white:#FFFFFF;
+  --accent-rose:#C4846A; --accent-teal:#5A8A7A; --accent-slate:#6B7F8A;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:'Raleway',sans-serif; background:var(--cream); color:var(--ink-mid); font-size:15px; line-height:1.5;}
+.header{
+  background:var(--ink); color:var(--white); padding:56px 32px 40px;
+  position:relative; overflow:hidden;
+  background-image: repeating-linear-gradient(45deg, rgba(201,168,76,0.06) 0px, rgba(201,168,76,0.06) 1px, transparent 1px, transparent 22px);
+}
+.header-inner{max-width:1200px; margin:0 auto; position:relative; z-index:1;}
+.header-label{font-family:'DM Mono',monospace; font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-light); margin-bottom:10px;}
+.header-title{font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(40px,6vw,72px); color:var(--white); letter-spacing:0.5px;}
+.header-sub{font-family:'Raleway',sans-serif; font-size:16px; color:var(--stone); margin-top:10px; font-weight:300;}
+.nav{position:sticky; top:0; z-index:50; background:var(--white); border-bottom:1px solid var(--stone-dark); box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+.nav-inner{max-width:1200px; margin:0 auto; display:flex; overflow-x:auto;}
+.nav-btn{font-family:'DM Mono',monospace; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--ink-light); background:none; border:none; padding:18px 20px; cursor:pointer; white-space:nowrap; border-bottom:3px solid transparent; transition:all .15s;}
+.nav-btn:hover{color:var(--ink);}
+.nav-btn.active{color:var(--ink); border-bottom-color:var(--gold); font-weight:500;}
+.container{max-width:1200px; margin:0 auto; padding:40px 32px 80px;}
+.tab-content{display:none;}
+.tab-content.active{display:block; animation:fadein .25s ease;}
+@keyframes fadein{from{opacity:0;} to{opacity:1;}}
+.section-title{font-family:'Cormorant Garamond',serif; font-weight:600; font-size:36px; color:var(--ink); margin:44px 0 20px;}
+.section-title:first-child{margin-top:0;}
+.section-label{font-family:'DM Mono',monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:8px;}
+.kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:8px;}
+.kpi-card{background:var(--white); border:1px solid var(--stone); border-radius:4px; padding:22px 20px; border-top:3px solid var(--gold);}
+.kpi-value{font-family:'Cormorant Garamond',serif; font-weight:600; font-size:32px; color:var(--ink);}
+.kpi-label{font-family:'DM Mono',monospace; font-size:12px; color:var(--ink-light); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px;}
+.kpi-sublabel{font-size:13px; color:var(--ink-faint); margin-top:6px;}
+.card{background:var(--white); border:1px solid var(--stone); border-radius:4px; padding:24px; margin-bottom:24px;}
+.card-title{font-size:20px; font-weight:600; color:var(--ink); margin-bottom:16px; font-family:'Raleway',sans-serif;}
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+.grid-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px;}
+@media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+.chart-wrap{position:relative; height:320px;}
+.chart-wrap.tall{height:420px;}
+.insight{background:var(--gold-pale); border-left:4px solid var(--gold); padding:16px 20px; border-radius:2px; font-size:15px; color:var(--ink-mid); margin:16px 0;}
+.insight b{color:var(--ink);}
+.sel-btn{font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:8px 16px; border:1px solid var(--stone-dark); background:var(--white); color:var(--ink-mid); cursor:pointer; border-radius:2px; margin:0 6px 6px 0;}
+.sel-btn.active{background:var(--ink); color:var(--gold-light); border-color:var(--ink);}
+.bar-row{display:flex; align-items:center; gap:12px; margin-bottom:10px; font-size:14px;}
+.bar-row .label{width:200px; flex-shrink:0; color:var(--ink-mid);}
+.bar-track{flex:1; background:var(--stone); border-radius:3px; height:20px; overflow:hidden; position:relative;}
+.bar-fill{background:var(--gold); height:100%; border-radius:3px;}
+.bar-fill.rose{background:var(--accent-rose);}
+.bar-val{width:110px; flex-shrink:0; text-align:right; font-family:'DM Mono',monospace; font-size:13px; color:var(--ink-mid);}
+table{width:100%; border-collapse:collapse; font-size:15px;}
+th{font-family:'DM Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-light); text-align:left; padding:10px 8px; border-bottom:2px solid var(--stone-dark);}
+td{padding:10px 8px; border-bottom:1px solid var(--stone);}
+tr.hot td{color:var(--accent-rose); font-weight:600;}
+.channel-card{background:var(--white); border:1px solid var(--stone); border-radius:4px; padding:16px 18px;}
+.channel-card .name{font-weight:600; color:var(--ink); text-transform:capitalize; margin-bottom:6px;}
+.channel-card .stats{font-family:'DM Mono',monospace; font-size:12px; color:var(--ink-light); margin-bottom:8px;}
+.mini-progress{height:6px; background:var(--stone); border-radius:3px; overflow:hidden;}
+.mini-progress .fill{height:100%; background:var(--gold);}
+.legend{display:flex; flex-wrap:wrap; gap:14px; margin-top:14px; font-size:13px;}
+.legend-item{display:flex; align-items:center; gap:6px;}
+.legend-dot{width:10px; height:10px; border-radius:2px;}
+.drill-list{margin-top:16px;}
+.pair-list .pair{display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--stone); font-size:14px;}
+.pair .count{font-family:'DM Mono',monospace; color:var(--gold); font-weight:600;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-label">Monthly Performance Report</div>
+    <div class="header-title">June 2026</div>
+    <div class="header-sub">Susan Shaw &mdash; Direct-to-Consumer Analytics</div>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nav-inner" id="navInner"></div>
+</div>
+
+<div class="container" id="container"></div>
+
+<script>
+const REPORT_DATA = {"meta": {"month": "June", "year": 2026, "generated": "2026-07-01"}, "kpis": {"gross_sales": 639661.51, "net_sales": 580968.17, "total_sales": 637010.46, "total_orders": 4166, "unique_customers": 3854, "aov": 139.45, "avg_items_per_order": 2.13, "total_discounts": 69571.16, "discount_rate": 10.93}, "new_vs_returning": {"new_customers": 2450, "new_net_sales": 337124.15, "new_orders": 2450, "returning_customers": 1528, "returning_net_sales": 243783.68, "returning_orders": 1715}, "daily_trend": [{"date": "2026-06-01", "net_sales": 19822.09, "orders": 142, "promo": false}, {"date": "2026-06-02", "net_sales": 19978.9, "orders": 144, "promo": false}, {"date": "2026-06-03", "net_sales": 18910.78, "orders": 128, "promo": false}, {"date": "2026-06-04", "net_sales": 19120.75, "orders": 127, "promo": false}, {"date": "2026-06-05", "net_sales": 17281.71, "orders": 125, "promo": false}, {"date": "2026-06-06", "net_sales": 14934.21, "orders": 112, "promo": false}, {"date": "2026-06-07", "net_sales": 28786.78, "orders": 199, "promo": true}, {"date": "2026-06-08", "net_sales": 20049.89, "orders": 153, "promo": true}, {"date": "2026-06-09", "net_sales": 25128.76, "orders": 187, "promo": true}, {"date": "2026-06-10", "net_sales": 25095.56, "orders": 186, "promo": true}, {"date": "2026-06-11", "net_sales": 21747.64, "orders": 158, "promo": true}, {"date": "2026-06-12", "net_sales": 21754.67, "orders": 157, "promo": true}, {"date": "2026-06-13", "net_sales": 23347.24, "orders": 162, "promo": true}, {"date": "2026-06-14", "net_sales": 40644.5, "orders": 289, "promo": true}, {"date": "2026-06-15", "net_sales": 16914.04, "orders": 119, "promo": false}, {"date": "2026-06-16", "net_sales": 14901.72, "orders": 108, "promo": false}, {"date": "2026-06-17", "net_sales": 14894.71, "orders": 105, "promo": false}, {"date": "2026-06-18", "net_sales": 19883.89, "orders": 145, "promo": false}, {"date": "2026-06-19", "net_sales": 17794.1, "orders": 130, "promo": false}, {"date": "2026-06-20", "net_sales": 21792.64, "orders": 137, "promo": false}, {"date": "2026-06-21", "net_sales": 16669.07, "orders": 125, "promo": false}, {"date": "2026-06-22", "net_sales": 20085.57, "orders": 149, "promo": false}, {"date": "2026-06-23", "net_sales": 18010.18, "orders": 135, "promo": false}, {"date": "2026-06-24", "net_sales": 19914.27, "orders": 146, "promo": false}, {"date": "2026-06-25", "net_sales": 16389.2, "orders": 111, "promo": false}, {"date": "2026-06-26", "net_sales": 13508.37, "orders": 99, "promo": false}, {"date": "2026-06-27", "net_sales": 12876.62, "orders": 92, "promo": false}, {"date": "2026-06-28", "net_sales": 14767.86, "orders": 106, "promo": false}, {"date": "2026-06-29", "net_sales": 14703.0, "orders": 98, "promo": false}, {"date": "2026-06-30", "net_sales": 11259.45, "orders": 92, "promo": false}], "weekly_trend": [{"week": 23, "net_sales": 138835.22, "orders": 977}, {"week": 24, "net_sales": 177768.26, "orders": 1292}, {"week": 25, "net_sales": 122850.17, "orders": 869}, {"week": 26, "net_sales": 115552.07, "orders": 838}], "day_of_week": [{"day": "Monday", "net_sales": 91574.59, "orders": 661}, {"day": "Tuesday", "net_sales": 89279.01, "orders": 666}, {"day": "Wednesday", "net_sales": 78815.32, "orders": 565}, {"day": "Thursday", "net_sales": 77141.48, "orders": 541}, {"day": "Friday", "net_sales": 70338.85, "orders": 511}, {"day": "Saturday", "net_sales": 72950.71, "orders": 503}, {"day": "Sunday", "net_sales": 100868.21, "orders": 719}], "channel_attribution": [{"channel": "google", "net_sales": 139934.69, "orders": 1025}, {"channel": "direct", "net_sales": 120618.95, "orders": 840}, {"channel": "klaviyo", "net_sales": 87812.07, "orders": 578}, {"channel": "facebook", "net_sales": 80218.17, "orders": 609}, {"channel": "instagram", "net_sales": 49880.85, "orders": 371}, {"channel": "unattributed", "net_sales": 11558.25, "orders": 88}, {"channel": "bing", "net_sales": 6908.99, "orders": 44}, {"channel": "simplycodes", "net_sales": 4832.61, "orders": 31}, {"channel": "capitaloneshopping", "net_sales": 4625.21, "orders": 36}, {"channel": "yahoo!", "net_sales": 3415.32, "orders": 22}], "meta_dependence": {"meta_net_sales": 130650.72, "meta_pct_of_net_sales": 22.5, "meta_orders": 985, "meta_pct_of_orders": 23.6, "top_channel": "alphabet", "top_channel_pct": 25.2, "top3_pct": 68.5, "platform_breakdown": [{"platform": "alphabet", "net_sales": 146446.67, "pct": 25.2}, {"platform": "meta", "net_sales": 130650.72, "pct": 22.5}, {"platform": "direct", "net_sales": 120618.95, "pct": 20.8}, {"platform": "klaviyo", "net_sales": 87812.07, "pct": 15.1}, {"platform": "microsoft", "net_sales": 6908.99, "pct": 1.2}, {"platform": "unattributed", "net_sales": 6607.58, "pct": 1.1}, {"platform": "simplycodes", "net_sales": 4832.61, "pct": 0.8}, {"platform": "capitaloneshopping", "net_sales": 4625.21, "pct": 0.8}]}, "traffic_type": [{"type": "paid", "net_sales": 345016.32, "orders": 2494}, {"type": "direct", "net_sales": 120693.1, "orders": 841}, {"type": "organic", "net_sales": 44304.58, "orders": 321}, {"type": "unknown", "net_sales": 19069.72, "orders": 140}, {"type": "unattributed", "net_sales": 761.28, "orders": 5}], "geography": [{"state": "Texas", "net_sales": 105431.95, "orders": 759}, {"state": "Georgia", "net_sales": 45822.22, "orders": 333}, {"state": "North Carolina", "net_sales": 45323.09, "orders": 340}, {"state": "Florida", "net_sales": 38204.56, "orders": 260}, {"state": "South Carolina", "net_sales": 34206.41, "orders": 236}, {"state": "Virginia", "net_sales": 29996.69, "orders": 210}, {"state": "Tennessee", "net_sales": 24901.23, "orders": 177}, {"state": "Louisiana", "net_sales": 22836.45, "orders": 167}, {"state": "California", "net_sales": 20460.06, "orders": 148}, {"state": "Alabama", "net_sales": 19597.06, "orders": 155}, {"state": "Arkansas", "net_sales": 13734.65, "orders": 99}, {"state": "Mississippi", "net_sales": 13063.57, "orders": 97}, {"state": "Kentucky", "net_sales": 11977.91, "orders": 87}, {"state": "Illinois", "net_sales": 11952.11, "orders": 92}, {"state": "Ohio", "net_sales": 11917.58, "orders": 80}], "top_products_sales": [{"product": "USA 250 Toggle Necklace", "net_sales": 19408.59, "units": 155}, {"product": "USA 250 Lapis Necklace", "net_sales": 18180.96, "units": 125}, {"product": "USA 250 Lapis Bracelet", "net_sales": 16657.55, "units": 172}, {"product": "USA 250 Bracelet", "net_sales": 14325.28, "units": 148}, {"product": "Coin Toggle Necklace", "net_sales": 14158.01, "units": 131}, {"product": "Alys Necklace", "net_sales": 12378.43, "units": 196}, {"product": "Cross Toggle Necklace", "net_sales": 11713.95, "units": 103}, {"product": "Double Link Chain Bracelet", "net_sales": 9668.06, "units": 96}, {"product": "USA 250 Paperclip Necklace", "net_sales": 9389.78, "units": 80}, {"product": "Mini Margaret Necklace", "net_sales": 8987.38, "units": 86}, {"product": "Multi Strand Turquoise + Coin Necklace", "net_sales": 8804.89, "units": 44}, {"product": "USA 250 Long Necklace", "net_sales": 7198.84, "units": 62}, {"product": "Bentley Stone Bracelet", "net_sales": 6536.3, "units": 105}, {"product": "Bird Bam Mahjong Toggle Necklace", "net_sales": 6204.62, "units": 51}, {"product": "Heart Toggle Necklace", "net_sales": 6022.51, "units": 55}], "top_products_units": [{"product": "Alys Necklace", "net_sales": 12378.43, "units": 196}, {"product": "USA 250 Lapis Bracelet", "net_sales": 16657.55, "units": 172}, {"product": "USA 250 Toggle Necklace", "net_sales": 19408.59, "units": 155}, {"product": "USA 250 Bracelet", "net_sales": 14325.28, "units": 148}, {"product": "Coin Toggle Necklace", "net_sales": 14158.01, "units": 131}, {"product": "USA 250 Lapis Necklace", "net_sales": 18180.96, "units": 125}, {"product": "Bentley Stone Bracelet", "net_sales": 6536.3, "units": 105}, {"product": "Cross Toggle Necklace", "net_sales": 11713.95, "units": 103}, {"product": "Double Link Chain Bracelet", "net_sales": 9668.06, "units": 96}, {"product": "Mini Margaret Necklace", "net_sales": 8987.38, "units": 86}, {"product": "USA 250 Paperclip Necklace", "net_sales": 9389.78, "units": 80}, {"product": "Bentley Earrings", "net_sales": 4717.73, "units": 73}, {"product": "Bailey Stretch Bracelet", "net_sales": 3959.8, "units": 64}, {"product": "USA 250 Long Necklace", "net_sales": 7198.84, "units": 62}, {"product": "Bird Bam Mahjong Toggle Bracelet", "net_sales": 5321.96, "units": 56}], "product_type_mix": [{"type": "Bracelet", "net_sales": 73681.13, "units": 832}, {"type": "Earring", "net_sales": 81662.69, "units": 1250}, {"type": "Necklace", "net_sales": 207424.66, "units": 1884}, {"type": "Ring", "net_sales": 8621.82, "units": 137}], "age_distribution": [{"age_group": "19-22", "count": 22}, {"age_group": "23-29", "count": 25}, {"age_group": "30-39", "count": 36}, {"age_group": "40-49", "count": 103}, {"age_group": "50-59", "count": 300}, {"age_group": "60-69", "count": 406}, {"age_group": "70-79", "count": 348}, {"age_group": "80-89", "count": 77}, {"age_group": "90+", "count": 3}], "top_products_by_age": {"19-22": [{"product": "Alys Necklace", "units": 2}, {"product": "USA 250 Toggle Necklace", "units": 2}, {"product": "Pearl Cab Studs", "units": 2}, {"product": "Bee Bangle", "units": 1}, {"product": "Alys Cross Necklace", "units": 1}], "23-29": [{"product": "Dainty Magnolia Necklace", "units": 2}, {"product": "Cross Toggle Necklace", "units": 2}, {"product": "Dogwood Studs", "units": 2}, {"product": "Becca Studs", "units": 1}, {"product": "Bamboo Hoops", "units": 1}], "30-39": [{"product": "Compass Toggle Necklace", "units": 3}, {"product": "USA 250 Lapis Necklace", "units": 2}, {"product": "USA 250 Long Necklace", "units": 2}, {"product": "USA 250 Bracelet", "units": 2}, {"product": "Heart Toggle Necklace", "units": 2}], "40-49": [{"product": "USA 250 Toggle Necklace", "units": 7}, {"product": "Mini Margaret Necklace", "units": 5}, {"product": "USA 250 Paperclip Necklace", "units": 5}, {"product": "USA 250 Lapis Bracelet", "units": 4}, {"product": "Alys Necklace", "units": 4}], "50-59": [{"product": "USA 250 Lapis Bracelet", "units": 22}, {"product": "USA 250 Lapis Necklace", "units": 18}, {"product": "USA 250 Toggle Necklace", "units": 15}, {"product": "USA 250 Bracelet", "units": 14}, {"product": "Coin Toggle Necklace", "units": 12}], "60-69": [{"product": "USA 250 Lapis Bracelet", "units": 29}, {"product": "USA 250 Toggle Necklace", "units": 23}, {"product": "USA 250 Bracelet", "units": 17}, {"product": "Mini Margaret Necklace", "units": 15}, {"product": "Alys Necklace", "units": 13}], "70-79": [{"product": "USA 250 Lapis Bracelet", "units": 23}, {"product": "USA 250 Toggle Necklace", "units": 21}, {"product": "USA 250 Lapis Necklace", "units": 15}, {"product": "USA 250 Bracelet", "units": 14}, {"product": "Bentley Stone Bracelet", "units": 13}], "80-89": [{"product": "Cross Toggle Necklace", "units": 6}, {"product": "USA 250 Lapis Bracelet", "units": 4}, {"product": "Heart Toggle Necklace", "units": 3}, {"product": "USA 250 Lapis Necklace", "units": 3}, {"product": "Bentley Stone Bracelet", "units": 3}]}, "top_products_by_region": {"South": [{"product": "Alys Necklace", "units": 142}, {"product": "USA 250 Lapis Bracelet", "units": 132}, {"product": "USA 250 Toggle Necklace", "units": 113}, {"product": "USA 250 Bracelet", "units": 110}, {"product": "USA 250 Lapis Necklace", "units": 105}], "Northeast": [{"product": "Alys Necklace", "units": 18}, {"product": "USA 250 Bracelet", "units": 13}, {"product": "Milly Flower Earrings", "units": 10}, {"product": "Coin Toggle Necklace", "units": 9}, {"product": "Carolina Cluster Drops", "units": 9}], "Midwest": [{"product": "USA 250 Lapis Bracelet", "units": 25}, {"product": "Alys Necklace", "units": 18}, {"product": "Coin Toggle Necklace", "units": 18}, {"product": "Bentley Stone Bracelet", "units": 14}, {"product": "USA 250 Toggle Necklace", "units": 13}], "West": [{"product": "USA 250 Toggle Necklace", "units": 19}, {"product": "Alys Necklace", "units": 16}, {"product": "USA 250 Bracelet", "units": 16}, {"product": "Coin Toggle Necklace", "units": 13}, {"product": "USA 250 Lapis Bracelet", "units": 12}]}, "top_products_by_state": {"Texas": [{"product": "USA 250 Lapis Necklace", "units": 40}, {"product": "USA 250 Lapis Bracelet", "units": 38}, {"product": "Alys Necklace", "units": 35}, {"product": "Double Link Chain Bracelet", "units": 25}, {"product": "Coin Toggle Necklace", "units": 25}], "North Carolina": [{"product": "Alys Necklace", "units": 22}, {"product": "USA 250 Lapis Bracelet", "units": 17}, {"product": "Cross Toggle Necklace", "units": 12}, {"product": "USA 250 Toggle Necklace", "units": 11}, {"product": "Carolina Cluster Drops", "units": 10}], "Georgia": [{"product": "USA 250 Lapis Necklace", "units": 15}, {"product": "USA 250 Toggle Necklace", "units": 15}, {"product": "Cross Toggle Necklace", "units": 14}, {"product": "USA 250 Lapis Bracelet", "units": 13}, {"product": "Margaret Studs", "units": 9}], "Florida": [{"product": "Bentley Stone Bracelet", "units": 11}, {"product": "USA 250 Toggle Necklace", "units": 10}, {"product": "USA 250 Lapis Necklace", "units": 9}, {"product": "Madeline Studs", "units": 8}, {"product": "Mini Margaret Necklace", "units": 8}], "South Carolina": [{"product": "USA 250 Lapis Bracelet", "units": 15}, {"product": "USA 250 Toggle Necklace", "units": 12}, {"product": "Alys Necklace", "units": 11}, {"product": "USA 250 Lapis Necklace", "units": 11}, {"product": "Double Link Chain Bracelet", "units": 8}], "Virginia": [{"product": "Alys Necklace", "units": 14}, {"product": "USA 250 Bracelet", "units": 7}, {"product": "Ida Paperclip Necklace", "units": 7}, {"product": "Coin Toggle Necklace", "units": 6}, {"product": "USA 250 Lapis Bracelet", "units": 6}], "Tennessee": [{"product": "Alys Necklace", "units": 12}, {"product": "USA 250 Bracelet", "units": 12}, {"product": "USA 250 Paperclip Necklace", "units": 10}, {"product": "USA 250 Toggle Necklace", "units": 9}, {"product": "Coin Toggle Necklace", "units": 7}], "Louisiana": [{"product": "Coin Toggle Necklace", "units": 9}, {"product": "Bentley Earrings", "units": 8}, {"product": "USA 250 Bracelet", "units": 8}, {"product": "USA 250 Toggle Necklace", "units": 8}, {"product": "Bentley Stone Bracelet", "units": 5}], "Alabama": [{"product": "Alys Necklace", "units": 8}, {"product": "USA 250 Bracelet", "units": 6}, {"product": "Coin Toggle Necklace", "units": 6}, {"product": "Cross Toggle Necklace", "units": 5}, {"product": "Bentley Stone Bracelet", "units": 5}], "California": [{"product": "USA 250 Toggle Necklace", "units": 9}, {"product": "USA 250 Bracelet", "units": 8}, {"product": "Alys Necklace", "units": 7}, {"product": "Coin Toggle Necklace", "units": 6}, {"product": "Bird Bam Mahjong Medium Paperclip Necklace", "units": 5}]}, "hourly_all": [{"hour": 0, "units": 70, "net_sales": 6226.25}, {"hour": 1, "units": 32, "net_sales": 3092.58}, {"hour": 2, "units": 27, "net_sales": 2775.54}, {"hour": 3, "units": 6, "net_sales": 625.72}, {"hour": 4, "units": 21, "net_sales": 1984.14}, {"hour": 5, "units": 58, "net_sales": 6007.96}, {"hour": 6, "units": 147, "net_sales": 14076.11}, {"hour": 7, "units": 262, "net_sales": 24900.77}, {"hour": 8, "units": 289, "net_sales": 28622.99}, {"hour": 9, "units": 329, "net_sales": 32097.42}, {"hour": 10, "units": 381, "net_sales": 37613.12}, {"hour": 11, "units": 367, "net_sales": 35048.33}, {"hour": 12, "units": 205, "net_sales": 16195.73}, {"hour": 13, "units": 387, "net_sales": 33554.39}, {"hour": 14, "units": 404, "net_sales": 38764.45}, {"hour": 15, "units": 350, "net_sales": 33410.87}, {"hour": 16, "units": 304, "net_sales": 28654.68}, {"hour": 17, "units": 327, "net_sales": 31492.86}, {"hour": 18, "units": 274, "net_sales": 26041.48}, {"hour": 19, "units": 309, "net_sales": 29328.44}, {"hour": 20, "units": 325, "net_sales": 32340.68}, {"hour": 21, "units": 293, "net_sales": 28650.3}, {"hour": 22, "units": 193, "net_sales": 18170.83}, {"hour": 23, "units": 131, "net_sales": 11177.82}], "hourly_by_region": {"South": [{"hour": 0, "units": 36}, {"hour": 1, "units": 19}, {"hour": 2, "units": 16}, {"hour": 3, "units": 4}, {"hour": 4, "units": 12}, {"hour": 5, "units": 45}, {"hour": 6, "units": 122}, {"hour": 7, "units": 213}, {"hour": 8, "units": 213}, {"hour": 9, "units": 241}, {"hour": 10, "units": 290}, {"hour": 11, "units": 285}, {"hour": 12, "units": 175}, {"hour": 13, "units": 300}, {"hour": 14, "units": 303}, {"hour": 15, "units": 253}, {"hour": 16, "units": 251}, {"hour": 17, "units": 253}, {"hour": 18, "units": 192}, {"hour": 19, "units": 238}, {"hour": 20, "units": 246}, {"hour": 21, "units": 213}, {"hour": 22, "units": 142}, {"hour": 23, "units": 82}], "Northeast": [{"hour": 0, "units": 3}, {"hour": 1, "units": 2}, {"hour": 2, "units": 1}, {"hour": 3, "units": 0}, {"hour": 4, "units": 5}, {"hour": 5, "units": 6}, {"hour": 6, "units": 10}, {"hour": 7, "units": 22}, {"hour": 8, "units": 34}, {"hour": 9, "units": 38}, {"hour": 10, "units": 23}, {"hour": 11, "units": 23}, {"hour": 12, "units": 5}, {"hour": 13, "units": 29}, {"hour": 14, "units": 33}, {"hour": 15, "units": 24}, {"hour": 16, "units": 26}, {"hour": 17, "units": 31}, {"hour": 18, "units": 26}, {"hour": 19, "units": 21}, {"hour": 20, "units": 28}, {"hour": 21, "units": 21}, {"hour": 22, "units": 8}, {"hour": 23, "units": 13}], "Midwest": [{"hour": 0, "units": 6}, {"hour": 1, "units": 0}, {"hour": 2, "units": 0}, {"hour": 3, "units": 1}, {"hour": 4, "units": 4}, {"hour": 5, "units": 5}, {"hour": 6, "units": 14}, {"hour": 7, "units": 23}, {"hour": 8, "units": 30}, {"hour": 9, "units": 25}, {"hour": 10, "units": 38}, {"hour": 11, "units": 32}, {"hour": 12, "units": 13}, {"hour": 13, "units": 36}, {"hour": 14, "units": 21}, {"hour": 15, "units": 40}, {"hour": 16, "units": 20}, {"hour": 17, "units": 22}, {"hour": 18, "units": 36}, {"hour": 19, "units": 23}, {"hour": 20, "units": 28}, {"hour": 21, "units": 29}, {"hour": 22, "units": 25}, {"hour": 23, "units": 18}], "West": [{"hour": 0, "units": 25}, {"hour": 1, "units": 11}, {"hour": 2, "units": 10}, {"hour": 3, "units": 1}, {"hour": 4, "units": 0}, {"hour": 5, "units": 2}, {"hour": 6, "units": 1}, {"hour": 7, "units": 4}, {"hour": 8, "units": 12}, {"hour": 9, "units": 23}, {"hour": 10, "units": 29}, {"hour": 11, "units": 25}, {"hour": 12, "units": 12}, {"hour": 13, "units": 20}, {"hour": 14, "units": 47}, {"hour": 15, "units": 33}, {"hour": 16, "units": 7}, {"hour": 17, "units": 20}, {"hour": 18, "units": 20}, {"hour": 19, "units": 22}, {"hour": 20, "units": 20}, {"hour": 21, "units": 26}, {"hour": 22, "units": 18}, {"hour": 23, "units": 18}]}, "hourly_by_age": {"19-22": [{"hour": 0, "units": 0}, {"hour": 1, "units": 0}, {"hour": 2, "units": 0}, {"hour": 3, "units": 0}, {"hour": 4, "units": 0}, {"hour": 5, "units": 0}, {"hour": 6, "units": 2}, {"hour": 7, "units": 0}, {"hour": 8, "units": 1}, {"hour": 9, "units": 1}, {"hour": 10, "units": 0}, {"hour": 11, "units": 1}, {"hour": 12, "units": 4}, {"hour": 13, "units": 4}, {"hour": 14, "units": 3}, {"hour": 15, "units": 2}, {"hour": 16, "units": 2}, {"hour": 17, "units": 2}, {"hour": 18, "units": -1}, {"hour": 19, "units": 1}, {"hour": 20, "units": 0}, {"hour": 21, "units": 1}, {"hour": 22, "units": 1}, {"hour": 23, "units": 0}], "23-29": [{"hour": 0, "units": 0}, {"hour": 1, "units": 0}, {"hour": 2, "units": 0}, {"hour": 3, "units": 0}, {"hour": 4, "units": 0}, {"hour": 5, "units": 0}, {"hour": 6, "units": 0}, {"hour": 7, "units": 0}, {"hour": 8, "units": 0}, {"hour": 9, "units": 0}, {"hour": 10, "units": 3}, {"hour": 11, "units": 1}, {"hour": 12, "units": 3}, {"hour": 13, "units": 5}, {"hour": 14, "units": 0}, {"hour": 15, "units": 2}, {"hour": 16, "units": 0}, {"hour": 17, "units": 2}, {"hour": 18, "units": 3}, {"hour": 19, "units": 6}, {"hour": 20, "units": 0}, {"hour": 21, "units": 2}, {"hour": 22, "units": 1}, {"hour": 23, "units": 1}], "30-39": [{"hour": 0, "units": 3}, {"hour": 1, "units": 0}, {"hour": 2, "units": 0}, {"hour": 3, "units": 0}, {"hour": 4, "units": 0}, {"hour": 5, "units": 1}, {"hour": 6, "units": 0}, {"hour": 7, "units": 1}, {"hour": 8, "units": 8}, {"hour": 9, "units": 1}, {"hour": 10, "units": 7}, {"hour": 11, "units": 1}, {"hour": 12, "units": 1}, {"hour": 13, "units": 1}, {"hour": 14, "units": 3}, {"hour": 15, "units": 1}, {"hour": 16, "units": 1}, {"hour": 17, "units": 0}, {"hour": 18, "units": 3}, {"hour": 19, "units": 5}, {"hour": 20, "units": 10}, {"hour": 21, "units": 1}, {"hour": 22, "units": 3}, {"hour": 23, "units": 1}], "40-49": [{"hour": 0, "units": 2}, {"hour": 1, "units": 0}, {"hour": 2, "units": 0}, {"hour": 3, "units": 1}, {"hour": 4, "units": 1}, {"hour": 5, "units": 1}, {"hour": 6, "units": 1}, {"hour": 7, "units": 2}, {"hour": 8, "units": 5}, {"hour": 9, "units": 13}, {"hour": 10, "units": 5}, {"hour": 11, "units": 14}, {"hour": 12, "units": 7}, {"hour": 13, "units": 6}, {"hour": 14, "units": 15}, {"hour": 15, "units": 10}, {"hour": 16, "units": 10}, {"hour": 17, "units": 12}, {"hour": 18, "units": 8}, {"hour": 19, "units": 8}, {"hour": 20, "units": 8}, {"hour": 21, "units": 13}, {"hour": 22, "units": 4}, {"hour": 23, "units": 5}], "50-59": [{"hour": 0, "units": 4}, {"hour": 1, "units": 2}, {"hour": 2, "units": 0}, {"hour": 3, "units": 0}, {"hour": 4, "units": 4}, {"hour": 5, "units": 5}, {"hour": 6, "units": 16}, {"hour": 7, "units": 22}, {"hour": 8, "units": 9}, {"hour": 9, "units": 29}, {"hour": 10, "units": 28}, {"hour": 11, "units": 25}, {"hour": 12, "units": 17}, {"hour": 13, "units": 32}, {"hour": 14, "units": 32}, {"hour": 15, "units": 23}, {"hour": 16, "units": 21}, {"hour": 17, "units": 14}, {"hour": 18, "units": 26}, {"hour": 19, "units": 23}, {"hour": 20, "units": 41}, {"hour": 21, "units": 26}, {"hour": 22, "units": 13}, {"hour": 23, "units": 7}], "60-69": [{"hour": 0, "units": 9}, {"hour": 1, "units": 4}, {"hour": 2, "units": 0}, {"hour": 3, "units": 0}, {"hour": 4, "units": 2}, {"hour": 5, "units": -1}, {"hour": 6, "units": 11}, {"hour": 7, "units": 50}, {"hour": 8, "units": 31}, {"hour": 9, "units": 21}, {"hour": 10, "units": 46}, {"hour": 11, "units": 29}, {"hour": 12, "units": 46}, {"hour": 13, "units": 27}, {"hour": 14, "units": 37}, {"hour": 15, "units": 36}, {"hour": 16, "units": 32}, {"hour": 17, "units": 30}, {"hour": 18, "units": 23}, {"hour": 19, "units": 25}, {"hour": 20, "units": 33}, {"hour": 21, "units": 29}, {"hour": 22, "units": 19}, {"hour": 23, "units": 21}], "70-79": [{"hour": 0, "units": 1}, {"hour": 1, "units": 5}, {"hour": 2, "units": 2}, {"hour": 3, "units": 2}, {"hour": 4, "units": 3}, {"hour": 5, "units": 2}, {"hour": 6, "units": 8}, {"hour": 7, "units": 19}, {"hour": 8, "units": 23}, {"hour": 9, "units": 13}, {"hour": 10, "units": 33}, {"hour": 11, "units": 35}, {"hour": 12, "units": 27}, {"hour": 13, "units": 35}, {"hour": 14, "units": 37}, {"hour": 15, "units": 18}, {"hour": 16, "units": 32}, {"hour": 17, "units": 21}, {"hour": 18, "units": 20}, {"hour": 19, "units": 27}, {"hour": 20, "units": 29}, {"hour": 21, "units": 21}, {"hour": 22, "units": 13}, {"hour": 23, "units": 6}], "80-89": [{"hour": 0, "units": 0}, {"hour": 1, "units": 0}, {"hour": 2, "units": 0}, {"hour": 3, "units": 0}, {"hour": 4, "units": 0}, {"hour": 5, "units": 0}, {"hour": 6, "units": 1}, {"hour": 7, "units": 4}, {"hour": 8, "units": 9}, {"hour": 9, "units": 8}, {"hour": 10, "units": 8}, {"hour": 11, "units": 3}, {"hour": 12, "units": 0}, {"hour": 13, "units": 12}, {"hour": 14, "units": 12}, {"hour": 15, "units": 9}, {"hour": 16, "units": 6}, {"hour": 17, "units": 1}, {"hour": 18, "units": 2}, {"hour": 19, "units": 7}, {"hour": 20, "units": 7}, {"hour": 21, "units": 3}, {"hour": 22, "units": 2}, {"hour": 23, "units": 2}]}, "qty_groups": [{"group": "1 item", "order_count": 800, "with_return": 44, "return_rate": 5.5, "return_value": 2195.76}, {"group": "2 items", "order_count": 2404, "with_return": 126, "return_rate": 5.2, "return_value": 10517.69}, {"group": "3 items", "order_count": 725, "with_return": 45, "return_rate": 6.2, "return_value": 4979.86}, {"group": "4-5 items", "order_count": 203, "with_return": 11, "return_rate": 5.4, "return_value": 2391.95}, {"group": "6+ items", "order_count": 34, "with_return": 3, "return_rate": 8.8, "return_value": 1249.8}], "top_returned_products": [{"product": "USA 250 Pearl Necklace", "return_value": 4674.81, "occurrences": 29, "gross_sales": 9834.81, "return_rate_pct": 47.5}, {"product": "Coin Toggle Necklace", "return_value": 1765.23, "occurrences": 15, "gross_sales": 18398.0, "return_rate_pct": 9.6}, {"product": "Cross Toggle Necklace", "return_value": 1411.02, "occurrences": 11, "gross_sales": 14704.0, "return_rate_pct": 9.6}, {"product": "USA 250 Lapis Bracelet", "return_value": 1337.66, "occurrences": 5, "gross_sales": 19610.0, "return_rate_pct": 6.8}, {"product": "Venetian Glass Bee Necklace", "return_value": 996.2, "occurrences": 6, "gross_sales": 6072.0, "return_rate_pct": 16.4}, {"product": "USA 250 Lapis Necklace", "return_value": 987.53, "occurrences": 7, "gross_sales": 20856.0, "return_rate_pct": 4.7}, {"product": "USA 250 Toggle Necklace", "return_value": 943.55, "occurrences": 7, "gross_sales": 22136.57, "return_rate_pct": 4.3}, {"product": "Double Link Chain Bracelet", "return_value": 803.02, "occurrences": 8, "gross_sales": 12360.0, "return_rate_pct": 6.5}, {"product": "USA 250 Long Necklace", "return_value": 800.01, "occurrences": 6, "gross_sales": 8704.0, "return_rate_pct": 9.2}, {"product": "Alys Necklace", "return_value": 792.2, "occurrences": 11, "gross_sales": 14616.0, "return_rate_pct": 5.4}], "returns_summary": {"total_return_rows": 542, "customers_with_returns": 313, "total_return_value": 42558.53, "return_rate_pct": 8.1}, "trend_requests": [{"category": "Rings", "count": 69}, {"category": "Bracelets", "count": 47}, {"category": "Pearls", "count": 41}, {"category": "Earrings", "count": 38}, {"category": "Silver", "count": 29}, {"category": "Colorful/Gemstones", "count": 25}, {"category": "Crosses/Religious", "count": 22}, {"category": "Classic/Timeless", "count": 20}, {"category": "Bold/Statement", "count": 19}, {"category": "Layering/Stacking", "count": 15}, {"category": "Coins", "count": 12}, {"category": "Mahjong", "count": 8}, {"category": "Charm", "count": 7}, {"category": "Longer Necklaces", "count": 6}, {"category": "Equestrian", "count": 6}], "returning_recency": [{"months": 0, "net_sales": 19522.25, "orders": 144}, {"months": 1, "net_sales": 20230.3, "orders": 143}, {"months": 2, "net_sales": 15259.23, "orders": 111}, {"months": 3, "net_sales": 8150.57, "orders": 54}, {"months": 4, "net_sales": 6544.45, "orders": 50}, {"months": 5, "net_sales": 4753.63, "orders": 42}, {"months": 6, "net_sales": 5525.3, "orders": 46}, {"months": 7, "net_sales": 9927.94, "orders": 70}, {"months": 8, "net_sales": 5319.77, "orders": 38}, {"months": 9, "net_sales": 5992.62, "orders": 36}, {"months": 10, "net_sales": 6645.92, "orders": 50}, {"months": 11, "net_sales": 5671.27, "orders": 44}, {"months": 12, "net_sales": 5502.28, "orders": 43}, {"months": 13, "net_sales": 4223.08, "orders": 25}, {"months": 14, "net_sales": 6634.0, "orders": 48}, {"months": 15, "net_sales": 5266.55, "orders": 40}, {"months": 16, "net_sales": 2962.49, "orders": 20}, {"months": 17, "net_sales": 4035.35, "orders": 30}, {"months": 18, "net_sales": 4083.49, "orders": 28}, {"months": 19, "net_sales": 6667.42, "orders": 41}, {"months": 20, "net_sales": 2602.25, "orders": 19}, {"months": 21, "net_sales": 3552.65, "orders": 28}, {"months": 22, "net_sales": 3000.96, "orders": 19}, {"months": 23, "net_sales": 3412.79, "orders": 24}], "collection_performance": {"match_rate": 99.1, "unmatched_titles": {"Piper Pearl Necklace": 14, "Bee Drop Pearl Necklace": 4, "Mixed Metal Coin Multi-Strand Turquoise Necklace": 2, "Cross Intaglio Necklace": 2, "Bulldog Onyx Necklace": 2, "Sand Dollar Paperclip Necklace": 2, "Oyster Bangle": 2, "Orange Charleston Bracelet": 2, "NEW LABEL": 2, "Lucille Cotton Pearl Necklace": 1, "Erin Clover Necklace": 1, "Gold Starfish Pearl Necklace": 1, "French Coin + Freshwater Pearl Necklace": 1, "Florence Bee Coin Pearl Necklace": 1, "Long Linked Butterfly Chain Necklace": 1, "Oyster Plate Paperclip Necklace": 1, "Long Longhorn Necklace": 1, "Dove Coin Toggle Bracelet": 1, "Dove Pearl Bracelet": 1, "Silver Bulldog Intaglio Bracelet": 1, "Mila Heart Studs": 1, "Red Coral Bentley Earrings": 1, "Silver Cross Drop Earrings": 1, "Shields Studs": 1, "2 pair of earring backs": 1, "\"Susan Shaw\" gold tag/charm": 1, "Susan Shaw white pouch": 1, "Susan Shaw white box": 1, "Cufflinks": 1, "Gold Elephant Intaglio Pearl Necklace": 1}, "top_collections": [{"collection": "USA 250", "net_sales": 89905.41, "units": 772}, {"collection": "Chain & Hardware", "net_sales": 49290.08, "units": 569}, {"collection": "Coins & Currency", "net_sales": 47092.04, "units": 438}, {"collection": "Cross / Classic & Other", "net_sales": 43879.95, "units": 463}, {"collection": "Pearl", "net_sales": 27339.32, "units": 271}, {"collection": "Animals / Bird", "net_sales": 25097.02, "units": 232}, {"collection": "Margaret", "net_sales": 22088.56, "units": 225}, {"collection": "Heart", "net_sales": 15875.36, "units": 157}, {"collection": "Floral & Botanical", "net_sales": 13770.24, "units": 200}, {"collection": "Venetian Glass", "net_sales": 13458.28, "units": 113}], "collection_groups": [{"group": "Broad", "net_sales": 156818.45, "units": 1725}, {"group": "Themed", "net_sales": 139823.82, "units": 1283}, {"group": "Named", "net_sales": 91050.44, "units": 1114}, {"group": "Animals", "net_sales": 61862.67, "units": 637}, {"group": "Cross", "net_sales": 50429.26, "units": 542}, {"group": "Material", "net_sales": 16598.57, "units": 143}]}, "top_colors": [{"color": "Blue Lapis", "net_sales": 16059.33, "units": 198}, {"color": "Aqua", "net_sales": 14451.61, "units": 134}, {"color": "Turquoise", "net_sales": 11468.82, "units": 142}, {"color": "Red Coral", "net_sales": 8592.04, "units": 105}, {"color": "Black Onyx", "net_sales": 4326.35, "units": 48}, {"color": "Pearl", "net_sales": 3073.08, "units": 42}, {"color": "Clear", "net_sales": 2974.32, "units": 26}, {"color": "White Turquoise", "net_sales": 2499.85, "units": 33}, {"color": "Baby Blue", "net_sales": 2398.59, "units": 32}, {"color": "Light Pink", "net_sales": 2153.56, "units": 22}, {"color": "Green Jade", "net_sales": 2115.06, "units": 19}, {"color": "Bright Pink", "net_sales": 1925.31, "units": 28}, {"color": "Coral", "net_sales": 1623.0, "units": 22}, {"color": "Cherry Red", "net_sales": 1550.1, "units": 14}, {"color": "White Agate", "net_sales": 1237.01, "units": 13}], "color_coverage_pct": 22.4, "product_affinity": {"multi_item_orders": 1110, "total_orders_in_product_file": 4412, "top_pairs": [{"product_a": "USA 250 Bracelet", "product_b": "USA 250 Toggle Necklace", "count": 15}, {"product_a": "USA 250 Lapis Bracelet", "product_b": "USA 250 Lapis Necklace", "count": 14}, {"product_a": "Double Link Chain Bracelet", "product_b": "Double Link Chain Necklace", "count": 9}, {"product_a": "Bentley Earrings", "product_b": "Bentley Stone Bracelet", "count": 8}, {"product_a": "USA 250 Bracelet", "product_b": "USA 250 Long Necklace", "count": 8}, {"product_a": "USA 250 Bracelet", "product_b": "USA 250 Lapis Bracelet", "count": 7}, {"product_a": "Mini Margaret Bracelet", "product_b": "Mini Margaret Necklace", "count": 7}, {"product_a": "Star Studs", "product_b": "USA 250 Toggle Necklace", "count": 6}, {"product_a": "Venetian Glass Bee Earrings", "product_b": "Venetian Glass Bee Necklace", "count": 6}, {"product_a": "Bird Bam Mahjong Toggle Bracelet", "product_b": "Bird Bam Mahjong Toggle Necklace", "count": 6}], "top10_pct_of_pair_occurrences": 4.2}, "peak_hour": 14, "promo_windows_declared": true, "waiting_for_sales": {"promo_windows": [{"start": "2026-06-07", "end": "2026-06-14", "label": "Summer Flash Sale ($25 off $100+)"}], "promo_net_sales": 206555.04, "promo_orders": 1491, "non_promo_net_sales": 374413.13, "non_promo_orders": 2675, "promo_pct_of_sales": 35.6, "promo_pct_of_orders": 35.8, "promo_days_count": 8, "non_promo_days_count": 22}};
+</script>
+<script>
+const D = REPORT_DATA;
+const fmt$ = n => '$' + Math.round(n).toLocaleString('en-US');
+const fmt$2 = n => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtN = n => Math.round(n).toLocaleString('en-US');
+const fmtPct = n => n.toFixed(1) + '%';
+const GOLD='#C9A84C', STONE='#E8E0D4', INK='#1A1510', ROSE='#C4846A', TEAL='#5A8A7A', SLATE='#6B7F8A', GOLDLIGHT='#E8D5A0';
+const palette = [GOLD, TEAL, ROSE, SLATE, '#8A6B9A', '#B8945A', '#7A9A8A', STONE];
+
+Chart.defaults.font.family = "'Raleway', sans-serif";
+Chart.defaults.font.size = 13;
+Chart.defaults.color = '#3D3328';
+
+const charts = {};
+function killChart(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
+
+const TABS = [
+  {id:'overview', label:'Overview'},
+  {id:'customers', label:'Customers'},
+  {id:'channels', label:'Channels'},
+  {id:'products', label:'Products'},
+  {id:'geography', label:'Geography'},
+  {id:'timing', label:'Purchase Timing'},
+  {id:'returns', label:'Returns'},
+  {id:'survey', label:'Survey'},
+];
+
+document.getElementById('navInner').innerHTML = TABS.map((t,i)=>
+  `<button class="nav-btn ${i===0?'active':''}" data-tab="${t.id}" onclick="showTab('${t.id}')">${t.label}</button>`).join('');
+
+function showTab(id){
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===id));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active', c.id===id));
+  renderTab(id);
+}
+
+const rendered = new Set();
+
+function renderTab(id){
+  if(rendered.has(id)) return;
+  rendered.add(id);
+  RENDERERS[id]();
+}
+
+// ============ OVERVIEW ============
+function renderOverview(){
+  const el = document.getElementById('overview');
+  const k = D.kpis;
+  el.innerHTML = `
+    <div class="section-label">Tab 1</div>
+    <div class="section-title">Overview</div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-value">${fmt$(k.gross_sales)}</div><div class="kpi-label">Gross Sales</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmt$(k.net_sales)}</div><div class="kpi-label">Net Sales</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmt$(k.total_sales)}</div><div class="kpi-label">Total Sales</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmtN(k.total_orders)}</div><div class="kpi-label">Orders</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmtN(k.unique_customers)}</div><div class="kpi-label">Unique Customers</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmt$2(k.aov)}</div><div class="kpi-label">Avg Order Value</div></div>
+      <div class="kpi-card"><div class="kpi-value">${k.avg_items_per_order}</div><div class="kpi-label">Items per Order</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmtPct(k.discount_rate)}</div><div class="kpi-label">Discount Rate</div></div>
+    </div>
+    ${D.promo_windows_declared ? `<div class="insight">The <b>${D.waiting_for_sales.promo_windows[0].label}</b> (${D.waiting_for_sales.promo_windows[0].start.slice(5)} &ndash; ${D.waiting_for_sales.promo_windows[0].end.slice(5)}) drove <b>${fmtPct(D.waiting_for_sales.promo_pct_of_sales)}</b> of the month's net sales in just ${D.waiting_for_sales.promo_days_count} of ${D.waiting_for_sales.promo_days_count + D.waiting_for_sales.non_promo_days_count} days. Average daily sales during the promo (${fmt$(D.waiting_for_sales.promo_net_sales / D.waiting_for_sales.promo_days_count)}) ran roughly ${((D.waiting_for_sales.promo_net_sales/D.waiting_for_sales.promo_days_count) / (D.waiting_for_sales.non_promo_net_sales/D.waiting_for_sales.non_promo_days_count)).toFixed(1)}&times; non-promo days (${fmt$(D.waiting_for_sales.non_promo_net_sales / D.waiting_for_sales.non_promo_days_count)}).</div>` : `<div class="insight">No promotional windows were declared for June 2026, so the daily sales trend below is shown without promo/non-promo highlighting this month.</div>`}
+    <div class="card"><div class="card-title">Daily Net Sales</div><div class="chart-wrap"><canvas id="dailyChart"></canvas></div>${D.promo_windows_declared ? `<div class="legend" style="margin-top:14px;"><div class="legend-item"><span class="legend-dot" style="background:#C9A84C"></span>Promo day</div><div class="legend-item"><span class="legend-dot" style="background:#D4C9B8"></span>Non-promo day</div></div>` : ``}</div>
+    <div class="grid-2">
+      <div class="card"><div class="card-title">Weekly Net Sales (full weeks)</div><div class="chart-wrap"><canvas id="weeklyChart"></canvas></div></div>
+      <div class="card"><div class="card-title">Sales by Day of Week</div><div class="chart-wrap"><canvas id="dowChart"></canvas></div></div>
+    </div>
+    <div class="card"><div class="card-title">Product Category Mix</div><div style="display:flex; align-items:center; gap:32px; flex-wrap:wrap;"><div class="chart-wrap" style="width:280px; height:280px; flex-shrink:0;"><canvas id="mixChart"></canvas></div><div id="mixLegend" class="legend" style="flex-direction:column; align-items:flex-start;"></div></div></div>
+  `;
+
+  charts.dailyChart = new Chart(document.getElementById('dailyChart'), {
+    type:'line',
+    data:{ labels:D.daily_trend.map(d=>d.date.slice(5)), datasets:[{label:'Net Sales', data:D.daily_trend.map(d=>d.net_sales), borderColor:GOLD, backgroundColor:'rgba(201,168,76,0.12)', fill:true, tension:0.3,
+      pointRadius: D.daily_trend.map(d=> D.promo_windows_declared ? (d.promo ? 6 : 2) : 3),
+      pointBackgroundColor: D.daily_trend.map(d=> D.promo_windows_declared ? (d.promo ? GOLD : STONE) : GOLD),
+      pointBorderColor: D.daily_trend.map(d=> D.promo_windows_declared ? (d.promo ? INK : STONE) : GOLD)
+    }]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>'$'+(v/1000)+'k'}}}}
+  });
+  charts.weeklyChart = new Chart(document.getElementById('weeklyChart'), {
+    type:'bar',
+    data:{labels:D.weekly_trend.map(w=>'Week '+w.week), datasets:[{label:'Net Sales', data:D.weekly_trend.map(w=>w.net_sales), backgroundColor:GOLD, borderRadius:3}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>'$'+(v/1000)+'k'}}}}
+  });
+  const maxDow = Math.max(...D.day_of_week.map(d=>d.net_sales));
+  charts.dowChart = new Chart(document.getElementById('dowChart'), {
+    type:'bar',
+    data:{labels:D.day_of_week.map(d=>d.day.slice(0,3)), datasets:[{data:D.day_of_week.map(d=>d.net_sales), backgroundColor:D.day_of_week.map(d=>d.net_sales===maxDow?GOLD:STONE), borderRadius:3}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>'$'+(v/1000)+'k'}}}}
+  });
+  charts.mixChart = new Chart(document.getElementById('mixChart'), {
+    type:'doughnut',
+    data:{labels:D.product_type_mix.map(t=>t.type), datasets:[{data:D.product_type_mix.map(t=>t.net_sales), backgroundColor:palette, borderWidth:2, borderColor:'#fff'}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
+  });
+  document.getElementById('mixLegend').innerHTML = D.product_type_mix.map((t,i)=>
+    `<div class="legend-item"><span class="legend-dot" style="background:${palette[i]}"></span>${t.type} — ${fmt$(t.net_sales)} (${fmtN(t.units)} units)</div>`).join('');
+}
+
+// ============ CUSTOMERS ============
+function renderCustomers(){
+  const el = document.getElementById('customers');
+  const nvr = D.new_vs_returning;
+  el.innerHTML = `
+    <div class="section-label">Tab 2</div>
+    <div class="section-title">Customers</div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-value">${fmtN(nvr.new_customers)}</div><div class="kpi-label">First-time Buyers</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmtN(nvr.returning_customers)}</div><div class="kpi-label">Returning Buyers</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmt$(nvr.new_net_sales)}</div><div class="kpi-label">New Customer Net Sales</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmt$(nvr.returning_net_sales)}</div><div class="kpi-label">Returning Customer Net Sales</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmtN(nvr.new_orders)}</div><div class="kpi-label">New Orders</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmtN(nvr.returning_orders)}</div><div class="kpi-label">Returning Orders</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><div class="card-title">New vs. Returning (by Net Sales)</div><div class="chart-wrap"><canvas id="nvrChart"></canvas></div></div>
+      <div class="card"><div class="card-title">Returning Customer Recency (months since first purchase)</div><div class="chart-wrap"><canvas id="recencyChart"></canvas></div></div>
+    </div>
+    <div class="insight"><b>What "Months since first purchase" means:</b> This tracks how long ago a customer made their very first purchase ever. A value of 0&ndash;2 means they first bought within the last three months and are now returning; higher values mean longer-tenured customers coming back. New customers (first purchase this month) are tracked separately and excluded from this recency chart.</div>
+  `;
+  charts.nvrChart = new Chart(document.getElementById('nvrChart'), {
+    type:'doughnut',
+    data:{labels:['New', 'Returning'], datasets:[{data:[nvr.new_net_sales, nvr.returning_net_sales], backgroundColor:[GOLD, STONE], borderWidth:2, borderColor:'#fff'}]},
+    options:{responsive:true, maintainAspectRatio:false}
+  });
+  charts.recencyChart = new Chart(document.getElementById('recencyChart'), {
+    type:'bar',
+    data:{labels:D.returning_recency.map(r=>r.months), datasets:[{data:D.returning_recency.map(r=>r.net_sales), backgroundColor:D.returning_recency.map(r=>r.months<=2?GOLD:STONE), borderRadius:2}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{title:{display:true,text:'Months since first purchase'}}, y:{ticks:{callback:v=>'$'+(v/1000)+'k'}}}}
+  });
+}
+
+// ============ CHANNELS ============
+function renderChannels(){
+  const el = document.getElementById('channels');
+  const md = D.meta_dependence;
+  el.innerHTML = `
+    <div class="section-label">Tab 3</div>
+    <div class="section-title">Channels</div>
+    <div class="grid-2">
+      <div class="card"><div class="card-title">Traffic Type</div><div style="display:flex; gap:24px; align-items:center;"><div class="chart-wrap" style="width:220px;height:220px;"><canvas id="ttChart"></canvas></div><div id="ttLegend" class="legend" style="flex-direction:column; align-items:flex-start;"></div></div></div>
+      <div class="card"><div class="card-title">Top 10 Channels by Net Sales</div><div class="chart-wrap"><canvas id="chChart"></canvas></div></div>
+    </div>
+    <div class="insight"><b>Meta paid drove ${fmtPct(md.meta_pct_of_net_sales)}</b> of net sales this month (${fmtPct(md.meta_pct_of_orders)} of orders). ${md.top_channel} was the single largest channel at ${fmtPct(md.top_channel_pct)} of net sales, and the top 3 channels combined (${md.platform_breakdown.slice(0,3).map(p=>p.platform).join(', ')}) accounted for <b>${fmtPct(md.top3_pct)}</b> of net sales.</div>
+    <div class="section-title" style="font-size:24px; margin-top:32px;">Channel Detail</div>
+    <div class="grid-3" id="channelCards"></div>
+  `;
+  charts.ttChart = new Chart(document.getElementById('ttChart'), {
+    type:'doughnut',
+    data:{labels:D.traffic_type.map(t=>t.type), datasets:[{data:D.traffic_type.map(t=>t.net_sales), backgroundColor:palette, borderWidth:2, borderColor:'#fff'}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
+  });
+  document.getElementById('ttLegend').innerHTML = D.traffic_type.map((t,i)=>`<div class="legend-item"><span class="legend-dot" style="background:${palette[i]}"></span>${t.type} — ${fmt$(t.net_sales)}</div>`).join('');
+
+  charts.chChart = new Chart(document.getElementById('chChart'), {
+    type:'bar',
+    data:{labels:D.channel_attribution.map(c=>c.channel), datasets:[{data:D.channel_attribution.map(c=>c.net_sales), backgroundColor:GOLD, borderRadius:3}]},
+    options:{indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>'$'+(v/1000)+'k'}}}}
+  });
+
+  const maxChan = Math.max(...D.channel_attribution.map(c=>c.net_sales));
+  document.getElementById('channelCards').innerHTML = D.channel_attribution.map(c=>`
+    <div class="channel-card">
+      <div class="name">${c.channel}</div>
+      <div class="stats">${fmt$(c.net_sales)} &middot; ${fmtN(c.orders)} orders</div>
+      <div class="mini-progress"><div class="fill" style="width:${(c.net_sales/maxChan*100).toFixed(0)}%"></div></div>
+    </div>`).join('');
+}
+
+// ============ PRODUCTS ============
+let productMode = 'sales';
+function renderProducts(){
+  const el = document.getElementById('products');
+  el.innerHTML = `
+    <div class="section-label">Tab 4</div>
+    <div class="section-title">Products</div>
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+        <div class="card-title">Top 15 Products</div>
+        <div>
+          <button class="sel-btn active" id="btnSales" onclick="setProductMode('sales')">By Net Sales</button>
+          <button class="sel-btn" id="btnUnits" onclick="setProductMode('units')">By Units Sold</button>
+        </div>
+      </div>
+      <div class="chart-wrap tall"><canvas id="prodChart"></canvas></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Top Products by Age Group</div>
+        <div id="ageBtns"></div>
+        <div class="drill-list" id="ageDrill"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Top Products by Region</div>
+        <div id="regionBtns"></div>
+        <div class="drill-list" id="regionDrill"></div>
+      </div>
+    </div>
+
+    <div class="section-title" style="font-size:24px; margin-top:32px;">Collections</div>
+    <div class="insight">Collection tags matched <b>${D.collection_performance.match_rate}%</b> of June's transaction rows against the product&ndash;collection map.</div>
+    <div class="grid-2">
+      <div class="card"><div class="card-title">Top 10 Collections by Net Sales</div><div class="chart-wrap"><canvas id="collChart"></canvas></div></div>
+      <div class="card"><div class="card-title">Collection Groups</div><div class="chart-wrap"><canvas id="collGroupChart"></canvas></div></div>
+    </div>
+
+    <div class="section-title" style="font-size:24px; margin-top:32px;">Colors</div>
+    <div class="insight">Color could be identified for <b>${D.color_coverage_pct}%</b> of product rows (the rest are products without a color variant, like plain chains or certain stud styles).</div>
+    <div class="card"><div class="card-title">Top 15 Colors by Net Sales</div><div class="chart-wrap tall"><canvas id="colorChart"></canvas></div></div>
+
+    <div class="section-title" style="font-size:24px; margin-top:32px;">Frequently Bought Together</div>
+    <div class="card">
+      <div class="card-title">Top 10 Product Pairs</div>
+      <div class="insight" style="margin-top:0;">${D.product_affinity.multi_item_orders} of ${D.product_affinity.total_orders_in_product_file} orders (${(D.product_affinity.multi_item_orders/D.product_affinity.total_orders_in_product_file*100).toFixed(1)}%) contained 2+ distinct products. The top 10 pairs below account for ${D.product_affinity.top10_pct_of_pair_occurrences}% of all multi-item pairings.</div>
+      <div class="pair-list">${D.product_affinity.top_pairs.map(p=>`<div class="pair"><span>${p.product_a} + ${p.product_b}</span><span class="count">${p.count}&times;</span></div>`).join('')}</div>
+    </div>
+  `;
+  buildProductChart();
+  buildAgeButtons(); buildRegionButtons();
+
+  charts.collChart = new Chart(document.getElementById('collChart'), {
+    type:'bar',
+    data:{labels:D.collection_performance.top_collections.map(c=>c.collection), datasets:[{data:D.collection_performance.top_collections.map(c=>c.net_sales), backgroundColor:GOLD, borderRadius:3}]},
+    options:{indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>'$'+(v/1000)+'k'}}}}
+  });
+  charts.collGroupChart = new Chart(document.getElementById('collGroupChart'), {
+    type:'doughnut',
+    data:{labels:D.collection_performance.collection_groups.map(g=>g.group), datasets:[{data:D.collection_performance.collection_groups.map(g=>g.net_sales), backgroundColor:palette, borderWidth:2, borderColor:'#fff'}]},
+    options:{responsive:true, maintainAspectRatio:false}
+  });
+  charts.colorChart = new Chart(document.getElementById('colorChart'), {
+    type:'bar',
+    data:{labels:D.top_colors.map(c=>c.color), datasets:[{data:D.top_colors.map(c=>c.net_sales), backgroundColor:GOLD, borderRadius:3}]},
+    options:{indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>'$'+(v/1000)+'k'}}}}
+  });
+}
+function setProductMode(mode){
+  productMode = mode;
+  document.getElementById('btnSales').classList.toggle('active', mode==='sales');
+  document.getElementById('btnUnits').classList.toggle('active', mode==='units');
+  buildProductChart();
+}
+function buildProductChart(){
+  killChart('prodChart');
+  const src = productMode==='sales' ? D.top_products_sales : D.top_products_units;
+  const val = p => productMode==='sales' ? p.net_sales : p.units;
+  charts.prodChart = new Chart(document.getElementById('prodChart'), {
+    type:'bar',
+    data:{labels:src.map(p=>p.product), datasets:[{data:src.map(val), backgroundColor:GOLD, borderRadius:3}]},
+    options:{indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=> productMode==='sales' ? '$'+(v/1000)+'k' : v}}}}
+  });
+}
+function buildAgeButtons(){
+  const ages = Object.keys(D.top_products_by_age);
+  document.getElementById('ageBtns').innerHTML = ages.map((a,i)=>`<button class="sel-btn ${i===0?'active':''}" onclick="showAgeDrill('${a}', this)">${a}</button>`).join('');
+  showAgeDrill(ages[0]);
+}
+function showAgeDrill(age, btn){
+  if(btn){ document.querySelectorAll('#ageBtns .sel-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  const items = D.top_products_by_age[age];
+  const max = Math.max(...items.map(i=>i.units));
+  document.getElementById('ageDrill').innerHTML = items.map(i=>`
+    <div class="bar-row"><div class="label">${i.product}</div><div class="bar-track"><div class="bar-fill" style="width:${(i.units/max*100).toFixed(0)}%"></div></div><div class="bar-val">${i.units} units</div></div>`).join('');
+}
+function buildRegionButtons(){
+  const regions = Object.keys(D.top_products_by_region);
+  document.getElementById('regionBtns').innerHTML = regions.map((r,i)=>`<button class="sel-btn ${i===0?'active':''}" onclick="showRegionDrill('${r}', this)">${r}</button>`).join('');
+  showRegionDrill(regions[0]);
+}
+function showRegionDrill(region, btn){
+  if(btn){ document.querySelectorAll('#regionBtns .sel-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  const items = D.top_products_by_region[region];
+  const max = Math.max(...items.map(i=>i.units));
+  document.getElementById('regionDrill').innerHTML = items.map(i=>`
+    <div class="bar-row"><div class="label">${i.product}</div><div class="bar-track"><div class="bar-fill" style="width:${(i.units/max*100).toFixed(0)}%"></div></div><div class="bar-val">${i.units} units</div></div>`).join('');
+}
+
+// ============ GEOGRAPHY ============
+function renderGeography(){
+  const el = document.getElementById('geography');
+  const max = Math.max(...D.geography.map(g=>g.net_sales));
+  el.innerHTML = `
+    <div class="section-label">Tab 5</div>
+    <div class="section-title">Geography</div>
+    <div class="card">
+      <div class="card-title">Top 15 States by Net Sales</div>
+      ${D.geography.map(g=>`<div class="bar-row"><div class="label">${g.state}</div><div class="bar-track"><div class="bar-fill" style="width:${(g.net_sales/max*100).toFixed(0)}%"></div></div><div class="bar-val">${fmt$(g.net_sales)}</div></div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="card-title">Top Products by State</div>
+      <div id="stateBtns"></div>
+      <div class="drill-list" id="stateDrill"></div>
+    </div>
+  `;
+  const states = Object.keys(D.top_products_by_state);
+  document.getElementById('stateBtns').innerHTML = states.map((s,i)=>`<button class="sel-btn ${i===0?'active':''}" onclick="showStateDrill('${s}', this)">${s}</button>`).join('');
+  showStateDrill(states[0]);
+}
+function showStateDrill(state, btn){
+  if(btn){ document.querySelectorAll('#stateBtns .sel-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  const items = D.top_products_by_state[state];
+  const max = Math.max(...items.map(i=>i.units));
+  document.getElementById('stateDrill').innerHTML = items.map(i=>`
+    <div class="bar-row"><div class="label">${i.product}</div><div class="bar-track"><div class="bar-fill" style="width:${(i.units/max*100).toFixed(0)}%"></div></div><div class="bar-val">${i.units} units</div></div>`).join('');
+}
+
+// ============ TIMING ============
+function renderTiming(){
+  const el = document.getElementById('timing');
+  const peak = D.peak_hour;
+  const peakLabel = peak===0?'12am':peak<12?peak+'am':peak===12?'12pm':(peak-12)+'pm';
+  el.innerHTML = `
+    <div class="section-label">Tab 6</div>
+    <div class="section-title">Purchase Timing</div>
+    <div class="card">
+      <div class="card-title">24-Hour Sales Heatmap (units sold)</div>
+      <div id="heatmap" style="display:grid; grid-template-columns:repeat(24,1fr); gap:3px;"></div>
+    </div>
+    <div class="insight">Peak purchasing hour was <b>${peakLabel}</b>. Sales activity is concentrated in the afternoon/evening hours, consistent with a national customer base checking out after work.</div>
+    <div class="grid-2">
+      <div class="card"><div class="card-title">Hourly by Region</div><div id="regionHourBtns"></div><div class="chart-wrap"><canvas id="regionHourChart"></canvas></div></div>
+      <div class="card"><div class="card-title">Hourly by Age Group</div><div id="ageHourBtns"></div><div class="chart-wrap"><canvas id="ageHourChart"></canvas></div></div>
+    </div>
+    <div class="insight">Purchase timing patterns this month look more <b>geographic than age-driven</b>: regional hourly curves show clearer separation (West Coast customers buying later in the day) than the age-group curves, which largely track the same overall daily rhythm regardless of age.</div>
+  `;
+  const maxU = Math.max(...D.hourly_all.map(h=>h.units));
+  document.getElementById('heatmap').innerHTML = D.hourly_all.map(h=>{
+    const intensity = maxU ? h.units/maxU : 0;
+    const bg = `rgba(201,168,76,${0.15+intensity*0.85})`;
+    return `<div title="${h.hour}:00 — ${h.units} units, ${fmt$(h.net_sales)}" style="background:${bg}; border-radius:3px; padding:8px 2px; text-align:center; font-family:'DM Mono',monospace; font-size:10px; color:${intensity>0.5?'#fff':'#3D3328'};">${h.hour}</div>`;
+  }).join('');
+
+  const regions = Object.keys(D.hourly_by_region);
+  document.getElementById('regionHourBtns').innerHTML = regions.map((r,i)=>`<button class="sel-btn ${i===0?'active':''}" onclick="showRegionHour('${r}', this)">${r}</button>`).join('');
+  showRegionHour(regions[0]);
+
+  const ages = Object.keys(D.hourly_by_age);
+  document.getElementById('ageHourBtns').innerHTML = ages.map((a,i)=>`<button class="sel-btn ${i===0?'active':''}" onclick="showAgeHour('${a}', this)">${a}</button>`).join('');
+  showAgeHour(ages[0]);
+}
+function showRegionHour(region, btn){
+  if(btn){ document.querySelectorAll('#regionHourBtns .sel-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  killChart('regionHourChart');
+  const items = D.hourly_by_region[region];
+  charts.regionHourChart = new Chart(document.getElementById('regionHourChart'), {
+    type:'bar', data:{labels:items.map(i=>i.hour), datasets:[{data:items.map(i=>i.units), backgroundColor:GOLD, borderRadius:2}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
+  });
+}
+function showAgeHour(age, btn){
+  if(btn){ document.querySelectorAll('#ageHourBtns .sel-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  killChart('ageHourChart');
+  const items = D.hourly_by_age[age];
+  charts.ageHourChart = new Chart(document.getElementById('ageHourChart'), {
+    type:'bar', data:{labels:items.map(i=>i.hour), datasets:[{data:items.map(i=>i.units), backgroundColor:TEAL, borderRadius:2}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
+  });
+}
+
+// ============ RETURNS ============
+function renderReturns(){
+  const el = document.getElementById('returns');
+  const rs = D.returns_summary;
+  const topReturn = D.qty_groups.reduce((a,b)=>a.return_rate>b.return_rate?a:b);
+  el.innerHTML = `
+    <div class="section-label">Tab 7</div>
+    <div class="section-title">Returns</div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-value">${fmtN(rs.total_return_rows)}</div><div class="kpi-label">Total Return Rows</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmtN(rs.customers_with_returns)}</div><div class="kpi-label">Customers with Returns</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmt$(rs.total_return_value)}</div><div class="kpi-label">Total Return Value</div></div>
+      <div class="kpi-card"><div class="kpi-value">${fmtPct(rs.return_rate_pct)}</div><div class="kpi-label">Return Rate</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Return Rate by Quantity Group</div>
+      ${D.qty_groups.map(g=>`<div class="bar-row"><div class="label">${g.group}</div><div class="bar-track"><div class="bar-fill rose" style="width:${(g.return_rate/topReturn.return_rate*100).toFixed(0)}%"></div></div><div class="bar-val">${g.return_rate}% (${g.order_count} orders)</div></div>`).join('')}
+    </div>
+    <div class="insight">Return rates are fairly consistent across basket sizes (5&ndash;9%), with the <b>${topReturn.group}</b> group showing the highest rate at ${topReturn.return_rate}%, though that group is a small sample (${topReturn.order_count} orders).</div>
+    <div class="card"><div class="card-title">Return Value by Quantity Group</div><div class="chart-wrap"><canvas id="retValChart"></canvas></div></div>
+    <div class="card">
+      <div class="card-title">Top 10 Returned Products</div>
+      <table><thead><tr><th>Rank</th><th>Product</th><th>Return Value</th><th>Occurrences</th><th>Gross Sales</th><th>Return Rate</th></tr></thead>
+      <tbody>${D.top_returned_products.map((p,i)=>`<tr class="${p.return_rate_pct>20?'hot':''}"><td>${i+1}</td><td>${p.product}</td><td>${fmt$(p.return_value)}</td><td>${p.occurrences}</td><td>${fmt$(p.gross_sales)}</td><td>${p.return_rate_pct}%</td></tr>`).join('')}</tbody></table>
+    </div>
+  `;
+  charts.retValChart = new Chart(document.getElementById('retValChart'), {
+    type:'bar', data:{labels:D.qty_groups.map(g=>g.group), datasets:[{data:D.qty_groups.map(g=>g.return_value), backgroundColor:ROSE, borderRadius:3}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>'$'+v}}}}
+  });
+}
+
+// ============ SURVEY ============
+function renderSurvey(){
+  const el = document.getElementById('survey');
+  const core = D.age_distribution.filter(a=>['50-59','60-69','70-79'].includes(a.age_group)).reduce((s,a)=>s+a.count,0);
+  const totalAge = D.age_distribution.reduce((s,a)=>s+a.count,0);
+  const topTrend = D.trend_requests[0];
+  el.innerHTML = `
+    <div class="section-label">Tab 8</div>
+    <div class="section-title">Survey</div>
+    <div class="card"><div class="card-title">Age Distribution</div><div class="chart-wrap"><canvas id="ageDistChart"></canvas></div></div>
+    <div class="insight">The core 50&ndash;79 cohort represents <b>${(core/totalAge*100).toFixed(0)}%</b> of survey respondents this month, confirming the customer base skews toward established, older buyers rather than younger first-time shoppers.</div>
+    <div class="section-title" style="font-size:24px; margin-top:32px;">Trend Requests</div>
+    <div class="grid-3" id="trendCards"></div>
+    <div class="insight">The most-requested category this month was <b>${topTrend.category}</b> (${topTrend.count} mentions). Comparing this against the Products tab shows where customer requests and current sales mix may not be aligned &mdash; worth a look at whether top-requested categories are proportionally represented in the product lineup and marketing push.</div>
+  `;
+  charts.ageDistChart = new Chart(document.getElementById('ageDistChart'), {
+    type:'bar', data:{labels:D.age_distribution.map(a=>a.age_group), datasets:[{data:D.age_distribution.map(a=>a.count), backgroundColor:GOLD, borderRadius:3}]},
+    options:{indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
+  });
+  const maxTrend = Math.max(...D.trend_requests.map(t=>t.count));
+  document.getElementById('trendCards').innerHTML = D.trend_requests.map(t=>`
+    <div class="channel-card"><div class="name">${t.category}</div><div class="stats">${t.count} mentions</div><div class="mini-progress"><div class="fill" style="width:${(t.count/maxTrend*100).toFixed(0)}%"></div></div></div>`).join('');
+}
+
+const RENDERERS = {
+  overview: renderOverview, customers: renderCustomers, channels: renderChannels,
+  products: renderProducts, geography: renderGeography, timing: renderTiming,
+  returns: renderReturns, survey: renderSurvey
+};
+
+document.getElementById('container').innerHTML = TABS.map((t,i)=>`<div class="tab-content ${i===0?'active':''}" id="${t.id}"></div>`).join('');
+renderTab('overview');
+</script>
+</body>
+</html>
