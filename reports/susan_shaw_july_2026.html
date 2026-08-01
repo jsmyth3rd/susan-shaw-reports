@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Susan Shaw Jewelry — July 2026 Performance Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=DM+Mono:wght@400;500&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --gold:#C9A84C; --gold-light:#E8D5A0; --gold-pale:#F5EDD8;
+  --cream:#FAF7F2; --ink:#1A1510; --ink-mid:#3D3328; --ink-light:#7A6B55; --ink-faint:#B8A98C;
+  --stone:#E8E0D4; --stone-dark:#D4C9B8; --white:#FFFFFF;
+  --accent-rose:#C4846A; --accent-teal:#5A8A7A; --accent-slate:#6B7F8A;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  font-family:'Raleway',sans-serif; background:var(--cream); color:var(--ink); font-size:14px; line-height:1.55;
+}
+h1,h2,h3,.serif{font-family:'Cormorant Garamond',serif;}
+.mono{font-family:'DM Mono',monospace;}
+
+/* HEADER */
+.header{
+  position:relative; background:var(--ink); color:var(--cream); padding:70px 24px 50px;
+  overflow:hidden; text-align:center;
+}
+.header::before{
+  content:""; position:absolute; inset:0;
+  background:repeating-linear-gradient(135deg, rgba(201,168,76,0.07) 0px, rgba(201,168,76,0.07) 2px, transparent 2px, transparent 18px);
+  pointer-events:none;
+}
+.header-inner{position:relative; z-index:1; max-width:900px; margin:0 auto;}
+.header .eyebrow{font-family:'DM Mono',monospace; letter-spacing:3px; text-transform:uppercase; font-size:12px; color:var(--gold-light); margin-bottom:18px;}
+.header h1{font-size:clamp(40px,6vw,72px); font-weight:600; color:var(--gold-pale); letter-spacing:0.5px; line-height:1.05;}
+.header .sub{margin-top:16px; font-size:17px; color:var(--stone); font-weight:300; letter-spacing:0.3px;}
+.header .divider{width:70px; height:2px; background:var(--gold); margin:26px auto;}
+
+/* NAV */
+.nav{
+  position:sticky; top:0; z-index:100; background:var(--white); border-bottom:1px solid var(--stone-dark);
+  display:flex; overflow-x:auto; box-shadow:0 2px 10px rgba(26,21,16,0.06);
+}
+.nav-btn{
+  font-family:'Raleway',sans-serif; font-weight:600; font-size:13px; letter-spacing:0.5px; text-transform:uppercase;
+  color:var(--ink-light); background:none; border:none; padding:18px 22px; cursor:pointer; white-space:nowrap;
+  border-bottom:3px solid transparent; transition:all .2s;
+}
+.nav-btn:hover{color:var(--ink);}
+.nav-btn.active{color:var(--ink); border-bottom-color:var(--gold);}
+
+/* LAYOUT */
+.wrap{max-width:1280px; margin:0 auto; padding:44px 24px 80px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block; animation:fadein .35s ease;}
+@keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+.section-title{font-size:36px; font-weight:600; color:var(--ink); margin-bottom:6px;}
+.section-desc{color:var(--ink-light); font-size:14px; margin-bottom:30px; max-width:760px;}
+
+/* KPI CARDS */
+.kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:16px; margin-bottom:36px;}
+.kpi-card{
+  background:var(--white); border:1px solid var(--stone); border-radius:6px; padding:22px 20px;
+  border-top:3px solid var(--gold);
+}
+.kpi-label{font-family:'DM Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-light); margin-bottom:8px;}
+.kpi-value{font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:600; color:var(--ink);}
+.kpi-sub{font-size:12px; color:var(--ink-faint); margin-top:4px;}
+
+/* CARD / CHART CONTAINERS */
+.grid-2{display:grid; grid-template-columns:1.4fr 1fr; gap:20px; margin-bottom:24px;}
+.grid-2b{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px;}
+.card{background:var(--white); border:1px solid var(--stone); border-radius:6px; padding:24px;}
+.card-title{font-size:20px; font-weight:600; font-family:'Cormorant Garamond',serif; color:var(--ink); margin-bottom:16px;}
+.chart-box{position:relative; height:320px;}
+.chart-box.tall{height:400px;}
+.chart-box.short{height:240px;}
+
+@media (max-width:900px){ .grid-2, .grid-2b{grid-template-columns:1fr;} }
+
+/* INSIGHT CALLOUT */
+.insight{
+  background:var(--gold-pale); border-left:4px solid var(--gold); border-radius:0 6px 6px 0;
+  padding:16px 20px; font-size:13.5px; color:var(--ink-mid); margin-top:18px; line-height:1.6;
+}
+.insight b{color:var(--ink);}
+.insight.rose{background:#F5E9E3; border-left-color:var(--accent-rose);}
+.insight.teal{background:#E7EFEC; border-left-color:var(--accent-teal);}
+
+/* SELECTOR BUTTONS */
+.sel-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+.sel-btn{
+  font-family:'DM Mono',monospace; font-size:12px; padding:8px 16px; border-radius:20px; border:1px solid var(--stone-dark);
+  background:var(--white); color:var(--ink-mid); cursor:pointer; transition:all .15s;
+}
+.sel-btn:hover{border-color:var(--gold);}
+.sel-btn.active{background:var(--gold); border-color:var(--gold); color:var(--white); font-weight:500;}
+
+/* CHANNEL GRID */
+.channel-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px;}
+.channel-card{background:var(--stone); border-radius:6px; padding:16px 18px;}
+.channel-card .ch-name{font-family:'DM Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-light); margin-bottom:6px;}
+.channel-card .ch-val{font-size:22px; font-weight:600; font-family:'Cormorant Garamond',serif; color:var(--ink);}
+.channel-card .ch-sub{font-size:11.5px; color:var(--ink-faint); margin-top:2px;}
+
+/* TABLES */
+table{width:100%; border-collapse:collapse; font-size:13px;}
+th{text-align:left; font-family:'DM Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-light); padding:10px 12px; border-bottom:2px solid var(--stone-dark);}
+td{padding:10px 12px; border-bottom:1px solid var(--stone);}
+tr.flag-row td{background:#F5E9E3;}
+tr.flag-row td:first-child{border-left:3px solid var(--accent-rose);}
+
+/* RANKED LIST */
+.rank-list{list-style:none;}
+.rank-item{display:flex; align-items:center; gap:14px; padding:12px 0; border-bottom:1px solid var(--stone);}
+.rank-num{font-family:'DM Mono',monospace; font-size:13px; color:var(--gold); width:26px;}
+.rank-bar-wrap{flex:1;}
+.rank-name{font-size:13.5px; font-weight:500; color:var(--ink); margin-bottom:4px; display:flex; justify-content:space-between;}
+.rank-bar-bg{background:var(--stone); border-radius:3px; height:8px; overflow:hidden;}
+.rank-bar-fill{background:linear-gradient(90deg,var(--gold),var(--gold-light)); height:100%; border-radius:3px;}
+
+/* PAIR LIST */
+.pair-list{display:flex; flex-direction:column; gap:10px;}
+.pair-item{display:flex; justify-content:space-between; align-items:center; background:var(--stone); border-radius:6px; padding:12px 16px; font-size:13px;}
+.pair-count{font-family:'DM Mono',monospace; color:var(--gold); font-weight:500;}
+
+/* TREND CARD GRID */
+.trend-card{background:var(--white); border:1px solid var(--stone); border-radius:6px; padding:16px; text-align:center;}
+.trend-card .tc-count{font-size:28px; font-family:'Cormorant Garamond',serif; font-weight:600; color:var(--gold);}
+.trend-card .tc-name{font-size:12px; color:var(--ink-mid); margin-top:4px;}
+
+/* HEATMAP */
+.heatmap-grid{display:grid; grid-template-columns:repeat(24,1fr); gap:3px;}
+.heat-cell{aspect-ratio:1; border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:9px; color:var(--white); font-family:'DM Mono',monospace;}
+.heat-hour-label{font-size:9px; color:var(--ink-faint); text-align:center; font-family:'DM Mono',monospace;}
+
+footer{text-align:center; padding:40px 20px; color:var(--ink-faint); font-size:12px; font-family:'DM Mono',monospace;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="eyebrow">Susan Shaw Jewelry &middot; Performance Report</div>
+    <h1>July 2026</h1>
+    <div class="divider"></div>
+    <div class="sub">Monthly performance across sales, customers, channels, products, and survey insight — Bahama Coin, Palmera Stretch, Mother of Pearl Hearts & Double Margaret Studs launches, plus The Menagerie campaign</div>
+  </div>
+</div>
+
+<div class="nav" id="navBar">
+  <button class="nav-btn active" data-tab="tab1">Overview</button>
+  <button class="nav-btn" data-tab="tab2">Customers</button>
+  <button class="nav-btn" data-tab="tab3">Channels</button>
+  <button class="nav-btn" data-tab="tab4">Products</button>
+  <button class="nav-btn" data-tab="tab5">Geography</button>
+  <button class="nav-btn" data-tab="tab6">Purchase Timing</button>
+  <button class="nav-btn" data-tab="tab7">Returns</button>
+  <button class="nav-btn" data-tab="tab8">Survey</button>
+</div>
+
+<div class="wrap">
+
+<!-- ===================== TAB 1: OVERVIEW ===================== -->
+<div class="tab-panel active" id="tab1">
+  <div class="section-title">Overview</div>
+  <div class="section-desc">Top-line performance for July 2026. No sitewide discount promotions ran this month; five product and campaign launches anchored the calendar.</div>
+
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Daily Net Sales</div>
+      <div class="chart-box tall"><canvas id="chartDaily"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Product Category Mix</div>
+      <div class="chart-box tall"><canvas id="chartCategoryMix"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid-2b">
+    <div class="card">
+      <div class="card-title">Weekly Net Sales</div>
+      <div class="chart-box"><canvas id="chartWeekly"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Day of Week</div>
+      <div class="chart-box"><canvas id="chartDOW"></canvas></div>
+    </div>
+  </div>
+  <div class="insight" id="insightOverview"></div>
+</div>
+
+<!-- ===================== TAB 2: CUSTOMERS ===================== -->
+<div class="tab-panel" id="tab2">
+  <div class="section-title">Customers</div>
+  <div class="section-desc">New vs. returning customer behavior and purchase recency.</div>
+
+  <div class="kpi-grid" id="kpiGridCustomers"></div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">New vs. Returning</div>
+      <div class="chart-box"><canvas id="chartNVR"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Returning Customer Recency (months since first purchase)</div>
+      <div class="chart-box"><canvas id="chartRecency"></canvas></div>
+    </div>
+  </div>
+  <div class="insight" id="insightCustomers"></div>
+</div>
+
+<!-- ===================== TAB 3: CHANNELS ===================== -->
+<div class="tab-panel" id="tab3">
+  <div class="section-title">Channels</div>
+  <div class="section-desc">Traffic type mix, top referring channels, and Meta dependence tracking.</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Traffic Type</div>
+      <div class="chart-box"><canvas id="chartTraffic"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top 10 Referring Channels — Net Sales</div>
+      <div class="chart-box tall"><canvas id="chartChannels"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-title">Channel Snapshot</div>
+    <div class="channel-grid" id="channelGrid"></div>
+  </div>
+
+  <div class="insight rose" id="insightMeta"></div>
+</div>
+
+<!-- ===================== TAB 4: PRODUCTS ===================== -->
+<div class="tab-panel" id="tab4">
+  <div class="section-title">Products</div>
+  <div class="section-desc">Top performers by sales and units, plus collection, color, and basket-affinity performance.</div>
+
+  <div class="card" style="margin-bottom:24px;">
+    <div class="sel-row">
+      <button class="sel-btn active" data-toggle="prodmetric" data-val="sales">By Net Sales</button>
+      <button class="sel-btn" data-toggle="prodmetric" data-val="units">By Units Sold</button>
+    </div>
+    <div class="card-title">Top 15 Products</div>
+    <div class="chart-box tall"><canvas id="chartTopProducts"></canvas></div>
+  </div>
+
+  <div class="grid-2b">
+    <div class="card">
+      <div class="card-title">Top Products by Age Group</div>
+      <div class="sel-row" id="ageDrillBtns"></div>
+      <div id="ageDrillList"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top Products by Region</div>
+      <div class="sel-row" id="regionDrillBtns"></div>
+      <div id="regionDrillList"></div>
+    </div>
+  </div>
+
+  <div class="grid-2b">
+    <div class="card">
+      <div class="card-title">Top 10 Collections — Net Sales</div>
+      <div class="chart-box"><canvas id="chartCollections"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Collection Groups</div>
+      <div class="chart-box"><canvas id="chartCollectionGroups"></canvas></div>
+    </div>
+  </div>
+  <div class="insight" id="insightCollections"></div>
+
+  <div class="grid-2b" style="margin-top:24px;">
+    <div class="card">
+      <div class="card-title">Top 15 Colors — Net Sales</div>
+      <div class="chart-box"><canvas id="chartColors"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Product Affinity — Top 10 Basket Pairs</div>
+      <div class="pair-list" id="pairList"></div>
+    </div>
+  </div>
+  <div class="insight teal" id="insightColorsAffinity"></div>
+</div>
+
+<!-- ===================== TAB 5: GEOGRAPHY ===================== -->
+<div class="tab-panel" id="tab5">
+  <div class="section-title">Geography</div>
+  <div class="section-desc">Top states by net sales and their top-selling products.</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Top 15 States — Net Sales</div>
+      <ul class="rank-list" id="stateRankList"></ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Top Products by State</div>
+      <div class="sel-row" id="stateDrillBtns"></div>
+      <div id="stateDrillList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== TAB 6: PURCHASE TIMING ===================== -->
+<div class="tab-panel" id="tab6">
+  <div class="section-title">Purchase Timing</div>
+  <div class="section-desc">When customers buy — across the full 24-hour cycle, by region, and by age group.</div>
+
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-title">24-Hour Sales Heatmap</div>
+    <div class="heatmap-grid" id="heatmapGrid"></div>
+    <div class="heatmap-grid" id="heatmapLabels" style="margin-top:4px;"></div>
+  </div>
+  <div class="insight" id="insightPeakHours"></div>
+
+  <div class="grid-2b" style="margin-top:24px;">
+    <div class="card">
+      <div class="card-title">Hourly Sales by Region</div>
+      <div class="chart-box"><canvas id="chartHourlyRegion"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Hourly Sales by Age Group</div>
+      <div class="chart-box"><canvas id="chartHourlyAge"></canvas></div>
+    </div>
+  </div>
+  <div class="insight teal" id="insightGeoAge"></div>
+</div>
+
+<!-- ===================== TAB 7: RETURNS ===================== -->
+<div class="tab-panel" id="tab7">
+  <div class="section-title">Returns</div>
+  <div class="section-desc">Return behavior by basket size and top returned products.</div>
+
+  <div class="kpi-grid" id="kpiGridReturns"></div>
+
+  <div class="grid-2b">
+    <div class="card">
+      <div class="card-title">Return Rate by Purchase Quantity Group</div>
+      <div class="chart-box"><canvas id="chartReturnRate"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Return Value by Purchase Quantity Group</div>
+      <div class="chart-box"><canvas id="chartReturnValue"></canvas></div>
+    </div>
+  </div>
+  <div class="insight rose" id="insightReturns"></div>
+
+  <div class="card" style="margin-top:24px;">
+    <div class="card-title">Top 10 Returned Products</div>
+    <table id="returnsTable">
+      <thead><tr><th>Product</th><th>Return Value</th><th>Occurrences</th><th>Gross Sales</th><th>Return Rate</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===================== TAB 8: SURVEY ===================== -->
+<div class="tab-panel" id="tab8">
+  <div class="section-title">Survey</div>
+  <div class="section-desc">Post-purchase Grapevine survey — respondent age distribution and open-ended trend requests.</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Age Distribution</div>
+      <div class="chart-box"><canvas id="chartAge"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Trend Requests</div>
+      <div class="channel-grid" id="trendGrid"></div>
+    </div>
+  </div>
+  <div class="insight" id="insightAge"></div>
+  <div class="insight rose" id="insightProductGap"></div>
+</div>
+
+</div>
+
+<footer>Susan Shaw Jewelry &middot; Page 3 Consulting &middot; July 2026 Performance Report</footer>
+
+<script>
+const DATA = {"meta": {"month": "July", "year": "2026", "generated": "2026-08-01"}, "kpis": {"gross_sales": 600266.12, "net_sales": 551186.81, "total_sales": 605320.12, "orders": 4040, "customers": 3716, "aov": 136.43, "avg_items_per_order": 1.33, "total_discounts": -48048.84, "discount_rate": 8.0}, "new_vs_returning": {"New": {"customers": 2181, "net_sales": 295157.48, "orders": 2181}, "Returning": {"customers": 1668, "net_sales": 256029.33, "orders": 1859}}, "daily": [{"date": "2026-07-01", "net_sales": 13874.3, "orders": 99, "promo": false, "promo_label": null}, {"date": "2026-07-02", "net_sales": 12607.93, "orders": 103, "promo": false, "promo_label": null}, {"date": "2026-07-03", "net_sales": 14519.45, "orders": 105, "promo": false, "promo_label": null}, {"date": "2026-07-04", "net_sales": 11095.46, "orders": 84, "promo": false, "promo_label": null}, {"date": "2026-07-05", "net_sales": 11022.11, "orders": 83, "promo": false, "promo_label": null}, {"date": "2026-07-06", "net_sales": 12588.57, "orders": 94, "promo": false, "promo_label": null}, {"date": "2026-07-07", "net_sales": 14022.38, "orders": 105, "promo": false, "promo_label": null}, {"date": "2026-07-08", "net_sales": 12796.47, "orders": 101, "promo": false, "promo_label": null}, {"date": "2026-07-09", "net_sales": 18103.28, "orders": 138, "promo": false, "promo_label": null}, {"date": "2026-07-10", "net_sales": 21116.66, "orders": 158, "promo": true, "promo_label": "Bahama Coin Launch"}, {"date": "2026-07-11", "net_sales": 18702.07, "orders": 131, "promo": false, "promo_label": null}, {"date": "2026-07-12", "net_sales": 18470.32, "orders": 134, "promo": false, "promo_label": null}, {"date": "2026-07-13", "net_sales": 15569.66, "orders": 123, "promo": false, "promo_label": null}, {"date": "2026-07-14", "net_sales": 22005.71, "orders": 163, "promo": false, "promo_label": null}, {"date": "2026-07-15", "net_sales": 20726.49, "orders": 151, "promo": false, "promo_label": null}, {"date": "2026-07-16", "net_sales": 17976.96, "orders": 130, "promo": false, "promo_label": null}, {"date": "2026-07-17", "net_sales": 24598.77, "orders": 183, "promo": true, "promo_label": "Palmera Stretch Bracelets Launch"}, {"date": "2026-07-18", "net_sales": 21982.31, "orders": 147, "promo": false, "promo_label": null}, {"date": "2026-07-19", "net_sales": 22625.59, "orders": 157, "promo": false, "promo_label": null}, {"date": "2026-07-20", "net_sales": 15942.73, "orders": 124, "promo": false, "promo_label": null}, {"date": "2026-07-21", "net_sales": 15252.74, "orders": 124, "promo": false, "promo_label": null}, {"date": "2026-07-22", "net_sales": 20703.54, "orders": 154, "promo": true, "promo_label": "Mother of Pearl Hearts Launch"}, {"date": "2026-07-23", "net_sales": 20904.4, "orders": 163, "promo": false, "promo_label": null}, {"date": "2026-07-24", "net_sales": 22265.07, "orders": 155, "promo": true, "promo_label": "The Menagerie Campaign Launch"}, {"date": "2026-07-25", "net_sales": 21085.22, "orders": 144, "promo": false, "promo_label": null}, {"date": "2026-07-26", "net_sales": 21772.27, "orders": 155, "promo": false, "promo_label": null}, {"date": "2026-07-27", "net_sales": 16919.08, "orders": 125, "promo": false, "promo_label": null}, {"date": "2026-07-28", "net_sales": 17807.34, "orders": 135, "promo": false, "promo_label": null}, {"date": "2026-07-29", "net_sales": 14202.04, "orders": 105, "promo": true, "promo_label": "Double Margaret Studs Launch"}, {"date": "2026-07-30", "net_sales": 20249.46, "orders": 140, "promo": false, "promo_label": null}, {"date": "2026-07-31", "net_sales": 19678.43, "orders": 127, "promo": false, "promo_label": null}], "weekly": [{"week": 27, "net_sales": 63119.25, "orders": 474}, {"week": 28, "net_sales": 115799.75, "orders": 861}, {"week": 29, "net_sales": 145485.49, "orders": 1054}, {"week": 30, "net_sales": 137925.97, "orders": 1019}, {"week": 31, "net_sales": 88856.35, "orders": 632}], "day_of_week": [{"day": "Mon", "net_sales": 61020.04, "orders": 466}, {"day": "Tue", "net_sales": 69088.17, "orders": 527}, {"day": "Wed", "net_sales": 82302.84, "orders": 610}, {"day": "Thu", "net_sales": 89842.03, "orders": 674}, {"day": "Fri", "net_sales": 102178.38, "orders": 728}, {"day": "Sat", "net_sales": 72865.06, "orders": 506}, {"day": "Sun", "net_sales": 73890.29, "orders": 529}], "channels": [{"channel": "facebook", "net_sales": 122826.94, "orders": 982}, {"channel": "google", "net_sales": 114234.96, "orders": 822}, {"channel": "direct", "net_sales": 111252.39, "orders": 745}, {"channel": "instagram", "net_sales": 61392.96, "orders": 481}, {"channel": "klaviyo", "net_sales": 54311.65, "orders": 362}, {"channel": "unattributed", "net_sales": 12021.69, "orders": 88}, {"channel": "simplycodes", "net_sales": 6855.32, "orders": 48}, {"channel": "shopmy", "net_sales": 6769.5, "orders": 44}, {"channel": "bing", "net_sales": 5528.22, "orders": 38}, {"channel": "duckduckgo", "net_sales": 2733.06, "orders": 21}], "meta_dependence": {"meta_pct_of_sales": 33.44, "meta_pct_of_orders": 36.24, "top1_platform": "meta", "top1_pct": 33.44, "top3_pct": 75.92}, "traffic_type": [{"type": "direct", "net_sales": 111485.15, "orders": 748}, {"type": "organic", "net_sales": 41936.42, "orders": 306}, {"type": "paid", "net_sales": 341008.03, "orders": 2567}, {"type": "unattributed", "net_sales": 1878.99, "orders": 10}, {"type": "unknown", "net_sales": 19141.65, "orders": 138}], "geography": [{"state": "Texas", "net_sales": 91024.0, "orders": 658}, {"state": "Georgia", "net_sales": 44481.29, "orders": 331}, {"state": "North Carolina", "net_sales": 37310.64, "orders": 276}, {"state": "South Carolina", "net_sales": 32860.56, "orders": 254}, {"state": "Florida", "net_sales": 32260.67, "orders": 235}, {"state": "Virginia", "net_sales": 28616.31, "orders": 194}, {"state": "California", "net_sales": 24464.51, "orders": 158}, {"state": "Tennessee", "net_sales": 22744.09, "orders": 178}, {"state": "Alabama", "net_sales": 21706.66, "orders": 168}, {"state": "Louisiana", "net_sales": 21304.54, "orders": 163}, {"state": "Arkansas", "net_sales": 18825.43, "orders": 138}, {"state": "Mississippi", "net_sales": 13655.51, "orders": 104}, {"state": "Kentucky", "net_sales": 12653.78, "orders": 91}, {"state": "New York", "net_sales": 11203.47, "orders": 84}, {"state": "Illinois", "net_sales": 10073.82, "orders": 74}], "top_products_by_sales": [{"product": "Coin Toggle Necklace", "net_sales": 11269.19, "units": 95}, {"product": "Double Link Chain Bracelet", "net_sales": 10668.22, "units": 99}, {"product": "Mini Margaret Necklace", "net_sales": 10260.26, "units": 93}, {"product": "Cross Toggle Necklace", "net_sales": 9572.75, "units": 81}, {"product": "Multi Strand Turquoise + Coin Necklace", "net_sales": 8789.16, "units": 44}, {"product": "Alys Necklace", "net_sales": 8370.23, "units": 128}, {"product": "Bahamas Coin Necklace", "net_sales": 7424.45, "units": 44}, {"product": "Venetian Glass Bee Necklace", "net_sales": 7394.74, "units": 45}, {"product": "Bentley Stone Bracelet", "net_sales": 6283.55, "units": 101}, {"product": "Alys Cross Necklace", "net_sales": 5283.72, "units": 66}, {"product": "USA 250 Lapis Bracelet", "net_sales": 5278.89, "units": 54}, {"product": "Compass Toggle Necklace", "net_sales": 5268.16, "units": 43}, {"product": "USA 250 Lapis Necklace", "net_sales": 5078.0, "units": 35}, {"product": "USA 250 Bracelet", "net_sales": 5077.48, "units": 51}, {"product": "USA 250 Toggle Necklace", "net_sales": 4986.93, "units": 42}], "top_products_by_units": [{"product": "Alys Necklace", "net_sales": 8370.23, "units": 128}, {"product": "Bentley Stone Bracelet", "net_sales": 6283.55, "units": 101}, {"product": "Double Link Chain Bracelet", "net_sales": 10668.22, "units": 99}, {"product": "Coin Toggle Necklace", "net_sales": 11269.19, "units": 95}, {"product": "Mini Margaret Necklace", "net_sales": 10260.26, "units": 93}, {"product": "Cross Toggle Necklace", "net_sales": 9572.75, "units": 81}, {"product": "Margaret Studs", "net_sales": 4331.73, "units": 69}, {"product": "Alys Cross Necklace", "net_sales": 5283.72, "units": 66}, {"product": "Bentley Earrings", "net_sales": 3768.74, "units": 59}, {"product": "Marigold Studs", "net_sales": 2937.74, "units": 58}, {"product": "Bailey Stretch Bracelet", "net_sales": 3781.05, "units": 58}, {"product": "USA 250 Lapis Bracelet", "net_sales": 5278.89, "units": 54}, {"product": "USA 250 Bracelet", "net_sales": 5077.48, "units": 51}, {"product": "Hammered Hoops", "net_sales": 2743.09, "units": 46}, {"product": "Venetian Glass Bee Necklace", "net_sales": 7394.74, "units": 45}], "product_type_mix": [{"type": "Bracelet", "net_sales": 86367.05}, {"type": "Earring", "net_sales": 102093.55}, {"type": "Necklace", "net_sales": 237786.82}, {"type": "Ring", "net_sales": 12295.5}], "age_distribution": [{"age": "16-18", "count": 14}, {"age": "19-22", "count": 22}, {"age": "23-29", "count": 25}, {"age": "30-39", "count": 30}, {"age": "40-49", "count": 71}, {"age": "50-59", "count": 252}, {"age": "60-69", "count": 385}, {"age": "70-79", "count": 355}, {"age": "80-89", "count": 78}, {"age": "90+", "count": 1}], "top_products_by_age": {"16-18": [{"product": "Hannah Butterfly Paperclip Necklace", "net_sales": 181.31}, {"product": "Classic Pearl Cab Studs", "net_sales": 168.0}, {"product": "Coin Toggle Necklace", "net_sales": 128.0}, {"product": "Small Mother of Pearl Heart Jane Necklace", "net_sales": 122.0}, {"product": "Heart Toggle Necklace", "net_sales": 108.8}], "19-22": [{"product": "Baroque Pearl Chain Necklace", "net_sales": 182.0}, {"product": "Classic Pearl Cab Studs", "net_sales": 155.4}, {"product": "Pearl Cab Chain Necklace", "net_sales": 146.21}, {"product": "Marigold Studs", "net_sales": 145.8}, {"product": "American Indian Nickel Turquoise Necklace", "net_sales": 132.0}], "23-29": [{"product": "USA 250 Bracelet", "net_sales": 742.0}, {"product": "USA 250 Toggle Necklace", "net_sales": 387.6}, {"product": "Small Venetian Glass Coin Necklace", "net_sales": 241.4}, {"product": "Dainty Jerusalem Cross Necklace", "net_sales": 181.3}, {"product": "Buffalo Coin Necklace", "net_sales": 180.0}], "30-39": [{"product": "Venetian Glass Chain Necklace", "net_sales": 309.41}, {"product": "Horse Bit Toggle Bracelet", "net_sales": 300.0}, {"product": "Bird Bam Mahjong Pearl Bracelet", "net_sales": 224.0}, {"product": "Bird Bam Mahjong Pearl Necklace", "net_sales": 172.0}, {"product": "Venetian Glass Bee Necklace", "net_sales": 165.6}], "40-49": [{"product": "Compass Toggle Necklace", "net_sales": 447.1}, {"product": "Jackie Chain Necklace", "net_sales": 267.69}, {"product": "Large Heart Necklace", "net_sales": 251.6}, {"product": "Double Link Chain Bracelet", "net_sales": 222.0}, {"product": "Mini Margaret Necklace", "net_sales": 222.0}], "50-59": [{"product": "Cross Toggle Necklace", "net_sales": 1036.8}, {"product": "Multi Strand Turquoise + Coin Necklace", "net_sales": 748.02}, {"product": "Bahamas Coin Necklace", "net_sales": 690.7}, {"product": "Bird Bam Mahjong Pearl Necklace", "net_sales": 636.41}, {"product": "USA 250 Lapis Bracelet", "net_sales": 620.1}], "60-69": [{"product": "Double Link Chain Bracelet", "net_sales": 1638.06}, {"product": "Mini Margaret Necklace", "net_sales": 1500.06}, {"product": "Bahamas Coin Necklace", "net_sales": 1154.81}, {"product": "Venetian Glass Bee Necklace", "net_sales": 1021.2}, {"product": "Multi Strand Turquoise + Coin Necklace", "net_sales": 1001.01}], "70-79": [{"product": "Coin Toggle Necklace", "net_sales": 1446.74}, {"product": "Double Link Chain Bracelet", "net_sales": 1362.05}, {"product": "Bahamas Coin Necklace", "net_sales": 1294.03}, {"product": "Buffalo Coin Necklace", "net_sales": 981.02}, {"product": "Mini Margaret Necklace", "net_sales": 888.02}], "80-89": [{"product": "Venetian Glass Bee Necklace", "net_sales": 496.82}, {"product": "Cross Toggle Necklace", "net_sales": 464.12}, {"product": "Coin Toggle Necklace", "net_sales": 357.51}, {"product": "Palmera Beaded Necklace", "net_sales": 296.0}, {"product": "White Turquoise Buffalo Nickel Necklace", "net_sales": 292.3}]}, "top_products_by_region": {"Midwest": [{"product": "Cross Toggle Necklace", "net_sales": 1641.03}, {"product": "Alys Necklace", "net_sales": 1378.82}, {"product": "Bahamas Coin Necklace", "net_sales": 1365.6}, {"product": "Multi Strand Turquoise + Coin Necklace", "net_sales": 1188.02}, {"product": "Venetian Glass Bee Necklace", "net_sales": 1159.21}], "Northeast": [{"product": "Venetian Glass Bee Necklace", "net_sales": 1361.06}, {"product": "Coin Toggle Necklace", "net_sales": 1299.54}, {"product": "Bentley Stone Bracelet", "net_sales": 911.21}, {"product": "Double Link Chain Bracelet", "net_sales": 822.02}, {"product": "Heart Toggle Necklace", "net_sales": 811.92}], "South": [{"product": "Coin Toggle Necklace", "net_sales": 8196.49}, {"product": "Double Link Chain Bracelet", "net_sales": 8166.19}, {"product": "Mini Margaret Necklace", "net_sales": 7992.19}, {"product": "Cross Toggle Necklace", "net_sales": 7022.9}, {"product": "Multi Strand Turquoise + Coin Necklace", "net_sales": 6039.12}], "West": [{"product": "Venetian Glass Bee Necklace", "net_sales": 1278.83}, {"product": "Double Link Chain Bracelet", "net_sales": 1116.01}, {"product": "Mini Margaret Necklace", "net_sales": 888.02}, {"product": "Buffalo Coin Necklace", "net_sales": 855.0}, {"product": "Venetian Glass Bee Earrings", "net_sales": 815.21}]}, "top_products_by_state": {"Texas": [{"product": "Mini Margaret Necklace", "net_sales": 3144.07}, {"product": "Coin Toggle Necklace", "net_sales": 1899.03}, {"product": "Double Link Chain Bracelet", "net_sales": 1806.02}, {"product": "Cross Toggle Necklace", "net_sales": 1597.82}, {"product": "Multi Strand Turquoise + Coin Necklace", "net_sales": 1595.04}], "Georgia": [{"product": "Double Link Chain Bracelet", "net_sales": 1398.02}, {"product": "Cross Toggle Necklace", "net_sales": 1204.42}, {"product": "Bahamas Coin Necklace", "net_sales": 1173.61}, {"product": "Baroque Pearl Toggle Pearl Necklace", "net_sales": 1057.82}, {"product": "Multi Strand Turquoise + Coin Necklace", "net_sales": 1001.01}], "North Carolina": [{"product": "Double Link Chain Bracelet", "net_sales": 1500.04}, {"product": "Bahamas Coin Necklace", "net_sales": 1064.7}, {"product": "Mini Margaret Necklace", "net_sales": 1008.01}, {"product": "Bamboo Initial Bracelet", "net_sales": 714.0}, {"product": "Margaret Studs", "net_sales": 686.81}], "South Carolina": [{"product": "Bahamas Coin Necklace", "net_sales": 954.31}, {"product": "USA 250 Lapis Bracelet", "net_sales": 784.41}, {"product": "Alys Cross Necklace", "net_sales": 651.88}, {"product": "Coin Toggle Necklace", "net_sales": 627.52}, {"product": "USA 250 Lapis Necklace", "net_sales": 608.31}], "Florida": [{"product": "Coin Toggle Necklace", "net_sales": 711.62}, {"product": "Turquoise Statement Necklace", "net_sales": 708.4}, {"product": "Bird Bam Mahjong Pearl Bracelet", "net_sales": 655.2}, {"product": "Double Link Chain Bracelet", "net_sales": 630.02}, {"product": "Fleur-De-Lis Intaglio Toggle Necklace", "net_sales": 598.0}], "Virginia": [{"product": "Coin Toggle Necklace", "net_sales": 959.13}, {"product": "Alys Necklace", "net_sales": 788.42}, {"product": "Compass Toggle Necklace", "net_sales": 615.61}, {"product": "Alys Cross Necklace", "net_sales": 570.91}, {"product": "Heart Toggle Necklace", "net_sales": 492.81}], "California": [{"product": "Double Link Chain Bracelet", "net_sales": 690.01}, {"product": "Venetian Glass Bee Necklace", "net_sales": 625.62}, {"product": "Multi Strand Turquoise + Coin Necklace", "net_sales": 561.01}, {"product": "Alys Necklace", "net_sales": 536.43}, {"product": "Bird Bam Mahjong Large Paperclip Necklace", "net_sales": 528.0}], "Tennessee": [{"product": "Multi Strand Turquoise + Coin Necklace", "net_sales": 814.01}, {"product": "Double Link Chain Bracelet", "net_sales": 666.03}, {"product": "Dainty Jerusalem Cross Necklace", "net_sales": 499.81}, {"product": "Large Heart Necklace", "net_sales": 482.81}, {"product": "Cotton Pearl Toggle Necklace", "net_sales": 463.61}], "Alabama": [{"product": "Elephant Intaglio Red Coral Necklace", "net_sales": 608.3}, {"product": "Bailey Stretch Bracelet", "net_sales": 559.3}, {"product": "USA 250 Lapis Bracelet", "net_sales": 450.53}, {"product": "USA 250 Toggle Necklace", "net_sales": 367.22}, {"product": "Coin Toggle Necklace", "net_sales": 345.61}], "Louisiana": [{"product": "Bird Bam Mahjong Toggle Necklace", "net_sales": 523.61}, {"product": "Cross Toggle Necklace", "net_sales": 492.81}, {"product": "Alys Cross Necklace", "net_sales": 484.21}, {"product": "Bentley Stone Bracelet", "net_sales": 472.62}, {"product": "USA 250 Lapis Necklace", "net_sales": 450.31}]}, "hourly_all": [{"hour": 0, "net_sales": 3412.61}, {"hour": 1, "net_sales": 2002.81}, {"hour": 2, "net_sales": 1841.93}, {"hour": 3, "net_sales": 1475.13}, {"hour": 4, "net_sales": 1896.45}, {"hour": 5, "net_sales": 5156.73}, {"hour": 6, "net_sales": 13807.6}, {"hour": 7, "net_sales": 22671.78}, {"hour": 8, "net_sales": 30860.52}, {"hour": 9, "net_sales": 35343.52}, {"hour": 10, "net_sales": 36985.07}, {"hour": 11, "net_sales": 38247.19}, {"hour": 12, "net_sales": 36122.93}, {"hour": 13, "net_sales": 34985.11}, {"hour": 14, "net_sales": 37617.75}, {"hour": 15, "net_sales": 31020.78}, {"hour": 16, "net_sales": 31208.71}, {"hour": 17, "net_sales": 29846.04}, {"hour": 18, "net_sales": 23783.74}, {"hour": 19, "net_sales": 27633.42}, {"hour": 20, "net_sales": 30652.5}, {"hour": 21, "net_sales": 23823.75}, {"hour": 22, "net_sales": 14711.04}, {"hour": 23, "net_sales": 6451.97}], "hourly_by_region": {"Midwest": [{"hour": 0, "net_sales": 0.0}, {"hour": 1, "net_sales": 134.31}, {"hour": 2, "net_sales": 0.0}, {"hour": 3, "net_sales": 286.6}, {"hour": 4, "net_sales": 68.0}, {"hour": 5, "net_sales": 108.81}, {"hour": 6, "net_sales": 1451.74}, {"hour": 7, "net_sales": 2365.93}, {"hour": 8, "net_sales": 2212.94}, {"hour": 9, "net_sales": 1855.3}, {"hour": 10, "net_sales": 3592.97}, {"hour": 11, "net_sales": 3659.85}, {"hour": 12, "net_sales": 3062.3}, {"hour": 13, "net_sales": 3524.32}, {"hour": 14, "net_sales": 3173.57}, {"hour": 15, "net_sales": 2803.71}, {"hour": 16, "net_sales": 1342.78}, {"hour": 17, "net_sales": 2334.55}, {"hour": 18, "net_sales": 1533.23}, {"hour": 19, "net_sales": 1233.38}, {"hour": 20, "net_sales": 3963.09}, {"hour": 21, "net_sales": 2967.5}, {"hour": 22, "net_sales": 543.5}, {"hour": 23, "net_sales": 338.11}], "Northeast": [{"hour": 0, "net_sales": 0.0}, {"hour": 1, "net_sales": 0.0}, {"hour": 2, "net_sales": 0.0}, {"hour": 3, "net_sales": 0.0}, {"hour": 4, "net_sales": 682.92}, {"hour": 5, "net_sales": 1439.32}, {"hour": 6, "net_sales": 1602.84}, {"hour": 7, "net_sales": 3546.06}, {"hour": 8, "net_sales": 3134.75}, {"hour": 9, "net_sales": 4432.9}, {"hour": 10, "net_sales": 3310.95}, {"hour": 11, "net_sales": 3476.36}, {"hour": 12, "net_sales": 3211.13}, {"hour": 13, "net_sales": 2086.46}, {"hour": 14, "net_sales": 2754.99}, {"hour": 15, "net_sales": 3843.19}, {"hour": 16, "net_sales": 2438.59}, {"hour": 17, "net_sales": 1852.84}, {"hour": 18, "net_sales": 1633.43}, {"hour": 19, "net_sales": 2692.71}, {"hour": 20, "net_sales": 2117.34}, {"hour": 21, "net_sales": 1671.21}, {"hour": 22, "net_sales": 974.01}, {"hour": 23, "net_sales": 120.7}], "South": [{"hour": 0, "net_sales": 2804.19}, {"hour": 1, "net_sales": 1360.5}, {"hour": 2, "net_sales": 975.37}, {"hour": 3, "net_sales": 567.71}, {"hour": 4, "net_sales": 1145.53}, {"hour": 5, "net_sales": 3350.19}, {"hour": 6, "net_sales": 10753.02}, {"hour": 7, "net_sales": 16399.48}, {"hour": 8, "net_sales": 24264.01}, {"hour": 9, "net_sales": 26085.89}, {"hour": 10, "net_sales": 28299.24}, {"hour": 11, "net_sales": 26731.05}, {"hour": 12, "net_sales": 28155.1}, {"hour": 13, "net_sales": 26571.24}, {"hour": 14, "net_sales": 25798.62}, {"hour": 15, "net_sales": 21742.84}, {"hour": 16, "net_sales": 23679.05}, {"hour": 17, "net_sales": 21323.0}, {"hour": 18, "net_sales": 19040.83}, {"hour": 19, "net_sales": 20814.59}, {"hour": 20, "net_sales": 22281.13}, {"hour": 21, "net_sales": 16424.3}, {"hour": 22, "net_sales": 11701.67}, {"hour": 23, "net_sales": 5138.04}], "West": [{"hour": 0, "net_sales": 608.42}, {"hour": 1, "net_sales": 508.0}, {"hour": 2, "net_sales": 866.56}, {"hour": 3, "net_sales": 620.82}, {"hour": 4, "net_sales": 0.0}, {"hour": 5, "net_sales": 258.41}, {"hour": 6, "net_sales": 0.0}, {"hour": 7, "net_sales": 360.31}, {"hour": 8, "net_sales": 921.21}, {"hour": 9, "net_sales": 2374.03}, {"hour": 10, "net_sales": 1727.91}, {"hour": 11, "net_sales": 4289.83}, {"hour": 12, "net_sales": 1434.8}, {"hour": 13, "net_sales": 2719.09}, {"hour": 14, "net_sales": 5012.57}, {"hour": 15, "net_sales": 2631.04}, {"hour": 16, "net_sales": 3413.37}, {"hour": 17, "net_sales": 4155.65}, {"hour": 18, "net_sales": 1576.25}, {"hour": 19, "net_sales": 2892.74}, {"hour": 20, "net_sales": 2146.94}, {"hour": 21, "net_sales": 2692.74}, {"hour": 22, "net_sales": 1415.35}, {"hour": 23, "net_sales": 855.12}]}, "hourly_by_age": {"16-18": [{"hour": 0, "net_sales": 0.0}, {"hour": 1, "net_sales": 0.0}, {"hour": 2, "net_sales": 0.0}, {"hour": 3, "net_sales": 0.0}, {"hour": 4, "net_sales": 0.0}, {"hour": 5, "net_sales": 0.0}, {"hour": 6, "net_sales": 0.0}, {"hour": 7, "net_sales": 128.0}, {"hour": 8, "net_sales": 0.0}, {"hour": 9, "net_sales": 0.0}, {"hour": 10, "net_sales": 0.0}, {"hour": 11, "net_sales": 159.31}, {"hour": 12, "net_sales": 312.0}, {"hour": 13, "net_sales": 466.06}, {"hour": 14, "net_sales": 84.0}, {"hour": 15, "net_sales": 0.0}, {"hour": 16, "net_sales": 76.0}, {"hour": 17, "net_sales": 217.4}, {"hour": 18, "net_sales": 0.0}, {"hour": 19, "net_sales": 0.0}, {"hour": 20, "net_sales": 0.0}, {"hour": 21, "net_sales": 0.0}, {"hour": 22, "net_sales": 0.0}, {"hour": 23, "net_sales": 0.0}], "19-22": [{"hour": 0, "net_sales": 0.0}, {"hour": 1, "net_sales": 0.0}, {"hour": 2, "net_sales": 76.0}, {"hour": 3, "net_sales": 0.0}, {"hour": 4, "net_sales": 0.0}, {"hour": 5, "net_sales": 0.0}, {"hour": 6, "net_sales": 253.4}, {"hour": 7, "net_sales": 0.0}, {"hour": 8, "net_sales": 287.32}, {"hour": 9, "net_sales": 0.0}, {"hour": 10, "net_sales": 389.81}, {"hour": 11, "net_sales": 258.0}, {"hour": 12, "net_sales": 103.19}, {"hour": 13, "net_sales": 136.7}, {"hour": 14, "net_sales": 83.31}, {"hour": 15, "net_sales": 240.8}, {"hour": 16, "net_sales": 0.0}, {"hour": 17, "net_sales": 0.0}, {"hour": 18, "net_sales": 168.32}, {"hour": 19, "net_sales": 0.0}, {"hour": 20, "net_sales": 0.0}, {"hour": 21, "net_sales": 0.0}, {"hour": 22, "net_sales": 0.0}, {"hour": 23, "net_sales": 170.0}], "23-29": [{"hour": 0, "net_sales": 0.0}, {"hour": 1, "net_sales": 0.0}, {"hour": 2, "net_sales": 0.0}, {"hour": 3, "net_sales": 0.0}, {"hour": 4, "net_sales": 0.0}, {"hour": 5, "net_sales": 0.0}, {"hour": 6, "net_sales": 0.0}, {"hour": 7, "net_sales": 0.0}, {"hour": 8, "net_sales": 216.21}, {"hour": 9, "net_sales": 0.0}, {"hour": 10, "net_sales": 156.41}, {"hour": 11, "net_sales": 565.6}, {"hour": 12, "net_sales": 110.0}, {"hour": 13, "net_sales": 348.5}, {"hour": 14, "net_sales": 998.7}, {"hour": 15, "net_sales": 0.0}, {"hour": 16, "net_sales": 174.0}, {"hour": 17, "net_sales": 334.71}, {"hour": 18, "net_sales": 115.6}, {"hour": 19, "net_sales": 0.0}, {"hour": 20, "net_sales": 410.2}, {"hour": 21, "net_sales": 83.3}, {"hour": 22, "net_sales": 146.0}, {"hour": 23, "net_sales": 359.4}], "30-39": [{"hour": 0, "net_sales": 0.0}, {"hour": 1, "net_sales": 0.0}, {"hour": 2, "net_sales": 0.0}, {"hour": 3, "net_sales": 0.0}, {"hour": 4, "net_sales": 52.71}, {"hour": 5, "net_sales": 0.0}, {"hour": 6, "net_sales": 76.5}, {"hour": 7, "net_sales": 98.0}, {"hour": 8, "net_sales": 211.3}, {"hour": 9, "net_sales": 17.66}, {"hour": 10, "net_sales": 370.0}, {"hour": 11, "net_sales": 788.12}, {"hour": 12, "net_sales": 192.8}, {"hour": 13, "net_sales": 517.71}, {"hour": 14, "net_sales": 112.0}, {"hour": 15, "net_sales": 83.31}, {"hour": 16, "net_sales": 301.42}, {"hour": 17, "net_sales": 0.0}, {"hour": 18, "net_sales": 401.21}, {"hour": 19, "net_sales": 50.0}, {"hour": 20, "net_sales": 0.0}, {"hour": 21, "net_sales": 0.0}, {"hour": 22, "net_sales": 1904.0}, {"hour": 23, "net_sales": 0.0}], "40-49": [{"hour": 0, "net_sales": 0.0}, {"hour": 1, "net_sales": 0.0}, {"hour": 2, "net_sales": 0.0}, {"hour": 3, "net_sales": 98.0}, {"hour": 4, "net_sales": 0.0}, {"hour": 5, "net_sales": 0.0}, {"hour": 6, "net_sales": 210.71}, {"hour": 7, "net_sales": 0.0}, {"hour": 8, "net_sales": 227.6}, {"hour": 9, "net_sales": 697.51}, {"hour": 10, "net_sales": 557.11}, {"hour": 11, "net_sales": 442.29}, {"hour": 12, "net_sales": 588.4}, {"hour": 13, "net_sales": 735.07}, {"hour": 14, "net_sales": 258.0}, {"hour": 15, "net_sales": 521.25}, {"hour": 16, "net_sales": 1044.63}, {"hour": 17, "net_sales": 844.83}, {"hour": 18, "net_sales": 751.71}, {"hour": 19, "net_sales": 64.61}, {"hour": 20, "net_sales": 644.32}, {"hour": 21, "net_sales": 805.47}, {"hour": 22, "net_sales": 222.21}, {"hour": 23, "net_sales": 0.0}], "50-59": [{"hour": 0, "net_sales": 0.0}, {"hour": 1, "net_sales": 0.0}, {"hour": 2, "net_sales": 431.81}, {"hour": 3, "net_sales": 146.2}, {"hour": 4, "net_sales": 102.01}, {"hour": 5, "net_sales": 0.0}, {"hour": 6, "net_sales": 979.74}, {"hour": 7, "net_sales": 1776.41}, {"hour": 8, "net_sales": 1551.57}, {"hour": 9, "net_sales": 2456.74}, {"hour": 10, "net_sales": 3153.44}, {"hour": 11, "net_sales": 2692.97}, {"hour": 12, "net_sales": 1994.21}, {"hour": 13, "net_sales": 1393.38}, {"hour": 14, "net_sales": 2220.25}, {"hour": 15, "net_sales": 2850.05}, {"hour": 16, "net_sales": 1868.09}, {"hour": 17, "net_sales": 1986.38}, {"hour": 18, "net_sales": 1216.15}, {"hour": 19, "net_sales": 2408.2}, {"hour": 20, "net_sales": 3015.56}, {"hour": 21, "net_sales": 1942.71}, {"hour": 22, "net_sales": 730.92}, {"hour": 23, "net_sales": 326.41}], "60-69": [{"hour": 0, "net_sales": 576.11}, {"hour": 1, "net_sales": 340.77}, {"hour": 2, "net_sales": 57.8}, {"hour": 3, "net_sales": 59.51}, {"hour": 4, "net_sales": 106.0}, {"hour": 5, "net_sales": 95.0}, {"hour": 6, "net_sales": 2633.34}, {"hour": 7, "net_sales": 3120.82}, {"hour": 8, "net_sales": 2176.64}, {"hour": 9, "net_sales": 2651.41}, {"hour": 10, "net_sales": 2880.94}, {"hour": 11, "net_sales": 3944.39}, {"hour": 12, "net_sales": 1747.66}, {"hour": 13, "net_sales": 3886.49}, {"hour": 14, "net_sales": 3403.97}, {"hour": 15, "net_sales": 4240.7}, {"hour": 16, "net_sales": 3187.03}, {"hour": 17, "net_sales": 3234.31}, {"hour": 18, "net_sales": 2475.36}, {"hour": 19, "net_sales": 3193.53}, {"hour": 20, "net_sales": 2361.02}, {"hour": 21, "net_sales": 3231.49}, {"hour": 22, "net_sales": 2127.35}, {"hour": 23, "net_sales": 434.11}], "70-79": [{"hour": 0, "net_sales": 232.92}, {"hour": 1, "net_sales": 0.0}, {"hour": 2, "net_sales": 0.0}, {"hour": 3, "net_sales": 220.0}, {"hour": 4, "net_sales": 459.01}, {"hour": 5, "net_sales": 130.0}, {"hour": 6, "net_sales": 1076.94}, {"hour": 7, "net_sales": 2402.31}, {"hour": 8, "net_sales": 2028.81}, {"hour": 9, "net_sales": 2553.93}, {"hour": 10, "net_sales": 3822.72}, {"hour": 11, "net_sales": 3381.64}, {"hour": 12, "net_sales": 2913.72}, {"hour": 13, "net_sales": 2416.97}, {"hour": 14, "net_sales": 3541.71}, {"hour": 15, "net_sales": 3537.21}, {"hour": 16, "net_sales": 3157.03}, {"hour": 17, "net_sales": 2839.81}, {"hour": 18, "net_sales": 1346.03}, {"hour": 19, "net_sales": 1920.51}, {"hour": 20, "net_sales": 2033.11}, {"hour": 21, "net_sales": 1055.92}, {"hour": 22, "net_sales": 753.41}, {"hour": 23, "net_sales": 71.41}], "80-89": [{"hour": 0, "net_sales": 64.61}, {"hour": 1, "net_sales": 0.0}, {"hour": 2, "net_sales": 0.0}, {"hour": 3, "net_sales": 0.0}, {"hour": 4, "net_sales": 0.0}, {"hour": 5, "net_sales": 76.0}, {"hour": 6, "net_sales": 138.0}, {"hour": 7, "net_sales": 238.01}, {"hour": 8, "net_sales": 682.01}, {"hour": 9, "net_sales": 146.22}, {"hour": 10, "net_sales": 776.7}, {"hour": 11, "net_sales": 574.1}, {"hour": 12, "net_sales": 1312.68}, {"hour": 13, "net_sales": 356.31}, {"hour": 14, "net_sales": 986.13}, {"hour": 15, "net_sales": 421.02}, {"hour": 16, "net_sales": 330.76}, {"hour": 17, "net_sales": 214.81}, {"hour": 18, "net_sales": 639.02}, {"hour": 19, "net_sales": 298.0}, {"hour": 20, "net_sales": 552.62}, {"hour": 21, "net_sales": 135.0}, {"hour": 22, "net_sales": 617.5}, {"hour": 23, "net_sales": 0.0}]}, "returns_by_qty_group": [{"bucket": "1", "order_count": 697, "return_count": 16, "return_rate": 2.3, "return_value": 1572.0}, {"bucket": "2", "order_count": 2460, "return_count": 77, "return_rate": 3.13, "return_value": 7679.77}, {"bucket": "3", "order_count": 613, "return_count": 33, "return_rate": 5.38, "return_value": 3456.99}, {"bucket": "4-5", "order_count": 228, "return_count": 9, "return_rate": 3.95, "return_value": 2029.07}, {"bucket": "6+", "order_count": 42, "return_count": 0, "return_rate": 0.0, "return_value": 0.0}], "top_returned_products": [{"product": "USA 250 Pearl Necklace", "return_value": 1556.64, "occurrences": 10, "gross_sales": 3276.64, "return_rate": 47.51}, {"product": "Coin Toggle Necklace", "return_value": 1138.36, "occurrences": 10, "gross_sales": 12680.0, "return_rate": 8.98}, {"product": "Multi Strand Turquoise + Coin Necklace", "return_value": 968.01, "occurrences": 5, "gross_sales": 10560.0, "return_rate": 9.17}, {"product": "Mini Margaret Necklace", "return_value": 947.0, "occurrences": 8, "gross_sales": 11760.0, "return_rate": 8.05}, {"product": "Cross Toggle Necklace", "return_value": 938.01, "occurrences": 8, "gross_sales": 11640.0, "return_rate": 8.06}, {"product": "Venetian Glass Bee Necklace", "return_value": 855.06, "occurrences": 5, "gross_sales": 8832.0, "return_rate": 9.68}, {"product": "USA 250 Toggle Necklace", "return_value": 754.82, "occurrences": 6, "gross_sales": 6256.0, "return_rate": 12.07}, {"product": "Cotton Pearl Toggle Necklace", "return_value": 680.61, "occurrences": 6, "gross_sales": 4882.0, "return_rate": 13.94}, {"product": "USA 250 Lapis Necklace", "return_value": 608.31, "occurrences": 4, "gross_sales": 5846.0, "return_rate": 10.41}, {"product": "Margaret Necklace", "return_value": 594.0, "occurrences": 2, "gross_sales": 4180.0, "return_rate": 14.21}], "trend_requests": [{"category": "Rings", "count": 53}, {"category": "Gold / Metal Tone", "count": 35}, {"category": "Layering / Stacking", "count": 17}, {"category": "Smaller / Delicate Pieces", "count": 17}, {"category": "Beaded", "count": 12}, {"category": "Gemstone / Color", "count": 12}, {"category": "Charms", "count": 10}, {"category": "Longer / Statement Necklaces", "count": 9}, {"category": "Coastal / Beach", "count": 8}, {"category": "Animals", "count": 8}, {"category": "Hoops", "count": 7}, {"category": "Bangles / Cuffs", "count": 4}, {"category": "Hearts", "count": 3}, {"category": "Everyday / Casual", "count": 3}, {"category": "Men's / Unisex", "count": 1}], "recency": [{"months": 0, "order_count": 160, "net_sales": 21045.51}, {"months": 1, "order_count": 135, "net_sales": 19293.53}, {"months": 2, "order_count": 87, "net_sales": 11021.27}, {"months": 3, "order_count": 84, "net_sales": 11292.62}, {"months": 4, "order_count": 67, "net_sales": 9874.72}, {"months": 5, "order_count": 46, "net_sales": 7116.53}, {"months": 6, "order_count": 46, "net_sales": 5317.44}, {"months": 7, "order_count": 32, "net_sales": 4190.83}, {"months": 8, "order_count": 63, "net_sales": 8525.36}, {"months": 9, "order_count": 32, "net_sales": 3990.9}, {"months": 10, "order_count": 33, "net_sales": 5031.02}, {"months": 11, "order_count": 47, "net_sales": 6845.2}, {"months": 12, "order_count": 63, "net_sales": 8586.76}, {"months": 13, "order_count": 38, "net_sales": 4456.33}, {"months": 14, "order_count": 43, "net_sales": 6510.9}, {"months": 15, "order_count": 37, "net_sales": 5358.66}, {"months": 16, "order_count": 37, "net_sales": 5411.2}, {"months": 17, "order_count": 26, "net_sales": 3663.48}, {"months": 18, "order_count": 34, "net_sales": 4682.25}, {"months": 19, "order_count": 36, "net_sales": 4007.18}, {"months": 20, "order_count": 40, "net_sales": 5740.85}, {"months": 21, "order_count": 24, "net_sales": 3262.75}, {"months": 22, "order_count": 26, "net_sales": 3287.95}, {"months": 23, "order_count": 36, "net_sales": 4856.16}], "waiting_for_sales": {"no_discount_promos_declared": true, "note": "No discount-driven promotional windows were declared this month. Five product/campaign launch days are flagged instead for reference.", "launch_days_pct_of_sales": 18.67, "launch_days_pct_of_orders": 18.69}, "product_affinity": {"top_pairs": [{"product_a": "Venetian Glass Bee Earrings", "product_b": "Venetian Glass Bee Necklace", "count": 8}, {"product_a": "Venetian Glass Bee Bracelet", "product_b": "Venetian Glass Bee Necklace", "count": 8}, {"product_a": "Venetian Glass Bee Bracelet", "product_b": "Venetian Glass Bee Earrings", "count": 8}, {"product_a": "Bird Bam Mahjong Pearl Bracelet", "product_b": "Bird Bam Mahjong Pearl Necklace", "count": 8}, {"product_a": "Mini Margaret Bracelet", "product_b": "Mini Margaret Necklace", "count": 7}, {"product_a": "Bentley Earrings", "product_b": "Bentley Stone Bracelet", "count": 6}, {"product_a": "Cotton Pearl Toggle Necklace", "product_b": "Square Cotton Pearl Drop Earrings", "count": 6}, {"product_a": "Margaret Drop Earrings", "product_b": "Mini Margaret Necklace", "count": 5}, {"product_a": "Heart Toggle Bracelet", "product_b": "Heart Toggle Necklace", "count": 5}, {"product_a": "Charlotte Dainty Necklace", "product_b": "Charlotte Pearl Drop Earrings", "count": 4}], "multi_item_orders": 873, "top10_pct_of_multi_item_orders": 7.45}, "collection_performance": {"match_rate": 96.98, "unmatched_row_count": 166, "unmatched_titles": [{"title": "Bahamas Coin Necklace", "rows": 42}, {"title": "Piper Pearl Necklace", "rows": 16}, {"title": "Palmera Stretch Bracelet", "rows": 15}, {"title": "Small Mother of Pearl Heart Katie Necklace", "rows": 9}, {"title": "Small Mother of Pearl Heart Jane Necklace", "rows": 7}, {"title": "Small Mother of Pearl Heart Paperclip Necklace", "rows": 6}, {"title": "Small Mother of Pearl Heart Earrings", "rows": 5}, {"title": "Cross Intaglio Necklace", "rows": 4}, {"title": "Ida Starfish Studs", "rows": 4}, {"title": "Double Margaret Studs", "rows": 4}, {"title": "Seashell Pendant Necklace", "rows": 3}, {"title": "Small Mother of Pearl Heart Paperclip Bracelet", "rows": 3}, {"title": "Sand Dollar Paperclip Necklace", "rows": 3}, {"title": "Seashell Intaglio Bracelet", "rows": 3}, {"title": "Small Mother of Pearl Heart Studs", "rows": 3}, {"title": "Equestrian Tack Pendant", "rows": 3}, {"title": "Silver Cross Drop Earrings", "rows": 3}, {"title": "Bamboo Links Necklace", "rows": 2}, {"title": "Elephant Intaglio Pearl Necklace", "rows": 2}, {"title": "Gold Elephant Intaglio Pearl Necklace", "rows": 2}, {"title": "Shields Studs", "rows": 2}, {"title": "Mixed Metal Equestrian Intaglio Bracelet", "rows": 2}, {"title": "Tortoise Flat Hoops", "rows": 2}, {"title": "American Indian Nickel White Turquoise Bracelet", "rows": 2}, {"title": "Buffalo Nickel Studs", "rows": 2}], "top_collections": [{"collection": "Cross / Classic & Other", "net_sales": 53152.5, "units": 550}, {"collection": "Coins & Currency", "net_sales": 50397.96, "units": 437}, {"collection": "Chain & Hardware", "net_sales": 49844.65, "units": 558}, {"collection": "Pearl", "net_sales": 34821.89, "units": 345}, {"collection": "Margaret", "net_sales": 26061.91, "units": 266}, {"collection": "Venetian Glass", "net_sales": 25407.93, "units": 187}, {"collection": "USA 250", "net_sales": 24792.79, "units": 216}, {"collection": "Animals / Bird", "net_sales": 19427.99, "units": 161}, {"collection": "Floral & Botanical", "net_sales": 18621.12, "units": 261}, {"collection": "Animals / Bee", "net_sales": 15933.15, "units": 181}], "top_collection_groups": [{"collection_group": "Broad", "net_sales": 175218.58, "units": 1884}, {"collection_group": "Named", "net_sales": 81193.2, "units": 927}, {"collection_group": "Themed", "net_sales": 80980.24, "units": 775}, {"collection_group": "Animals", "net_sales": 74832.15, "units": 760}, {"collection_group": "Cross", "net_sales": 61456.75, "units": 645}, {"collection_group": "Material", "net_sales": 28320.08, "units": 211}]}, "color_performance": {"pct_identifiable": 19.76, "top_colors": [{"color": "Aqua", "net_sales": 21141.89, "units": 170}, {"color": "Blue Lapis", "net_sales": 13329.32, "units": 146}, {"color": "Red Coral", "net_sales": 7639.92, "units": 96}, {"color": "Turquoise", "net_sales": 7161.69, "units": 85}, {"color": "Pearl", "net_sales": 7141.32, "units": 72}, {"color": "White Turquoise", "net_sales": 4597.11, "units": 59}, {"color": "Black Onyx", "net_sales": 4226.47, "units": 47}, {"color": "Light Pink", "net_sales": 2548.94, "units": 23}, {"color": "Baby Blue", "net_sales": 2184.57, "units": 27}, {"color": "Green Jade", "net_sales": 1754.72, "units": 16}, {"color": "Watermelon Pink", "net_sales": 1307.25, "units": 19}, {"color": "Mother Of Pearl", "net_sales": 1272.04, "units": 12}, {"color": "Malachite", "net_sales": 1256.11, "units": 10}, {"color": "Coral", "net_sales": 1249.13, "units": 16}, {"color": "Classic Blue", "net_sales": 1094.32, "units": 12}], "unknown_tokens": [{"token": "Venetian Green", "count": 59}, {"token": "Blue Crystal", "count": 4}, {"token": "Blue Turquoise", "count": 4}, {"token": "Brown", "count": 4}, {"token": "Halo", "count": 3}, {"token": "P", "count": 3}, {"token": "Lavender", "count": 2}, {"token": "Aqua Quartz", "count": 2}, {"token": "Grey Crystal", "count": 2}, {"token": "Equestrian", "count": 1}, {"token": "White Crystal", "count": 1}, {"token": "Sand", "count": 1}, {"token": "Teal Crystal", "count": 1}, {"token": "D", "count": 1}, {"token": "B", "count": 1}, {"token": "V", "count": 1}, {"token": "Sapphire", "count": 1}]}};
+const charts = {};
+function destroyChart(key){ if(charts[key]){ charts[key].destroy(); delete charts[key]; } }
+const fmtUSD = n => '$' + Number(n).toLocaleString('en-US',{maximumFractionDigits:0});
+const fmtUSD2 = n => '$' + Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtNum = n => Number(n).toLocaleString('en-US');
+const fmtPct = n => Number(n).toFixed(1) + '%';
+
+const PALETTE = ['#C9A84C','#C4846A','#5A8A7A','#6B7F8A','#E8D5A0','#3D3328','#B8A98C','#D4C9B8','#7A6B55','#E8E0D4'];
+
+Chart.defaults.font.family = "'Raleway', sans-serif";
+Chart.defaults.color = '#7A6B55';
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+
+// ---------- NAV ----------
+document.querySelectorAll('.nav-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ========================================================
+// TAB 1: OVERVIEW
+// ========================================================
+function renderKPIs(){
+  const k = DATA.kpis;
+  const cards = [
+    {label:'Net Sales', val: fmtUSD(k.net_sales)},
+    {label:'Gross Sales', val: fmtUSD(k.gross_sales)},
+    {label:'Orders', val: fmtNum(k.orders)},
+    {label:'Unique Customers', val: fmtNum(k.customers)},
+    {label:'AOV', val: fmtUSD2(k.aov)},
+    {label:'Avg Items / Order', val: k.avg_items_per_order},
+    {label:'Total Discounts', val: fmtUSD(Math.abs(k.total_discounts))},
+    {label:'Discount Rate', val: fmtPct(k.discount_rate)},
+  ];
+  document.getElementById('kpiGrid').innerHTML = cards.map(c=>`
+    <div class="kpi-card"><div class="kpi-label">${c.label}</div><div class="kpi-value">${c.val}</div></div>
+  `).join('');
+}
+renderKPIs();
+
+function renderDaily(){
+  destroyChart('daily');
+  const ctx = document.getElementById('chartDaily');
+  const labels = DATA.daily.map(d=>d.date.slice(5));
+  const promoIdx = DATA.daily.map(d=>d.promo);
+  charts.daily = new Chart(ctx, {
+    type:'line',
+    data:{ labels, datasets:[{
+      label:'Net Sales', data: DATA.daily.map(d=>d.net_sales),
+      borderColor:'#C9A84C', backgroundColor:'rgba(201,168,76,0.12)', fill:true, tension:0.3,
+      pointBackgroundColor: promoIdx.map(p=>p?'#C4846A':'#C9A84C'),
+      pointRadius: promoIdx.map(p=>p?5:2.5),
+      pointHoverRadius:6,
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        tooltip:{ callbacks:{
+          afterLabel: (c)=>{ const d = DATA.daily[c.dataIndex]; return d.promo ? '🡒 '+d.promo_label : ''; }
+        }}
+      },
+      scales:{ y:{ ticks:{ callback:v=>fmtUSD(v) }, grid:{color:'#E8E0D4'} }, x:{ grid:{display:false} } }
+    }
+  });
+}
+renderDaily();
+
+function renderCategoryMix(){
+  destroyChart('catmix');
+  const ctx = document.getElementById('chartCategoryMix');
+  charts.catmix = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels: DATA.product_type_mix.map(d=>d.type),
+      datasets:[{ data: DATA.product_type_mix.map(d=>d.net_sales), backgroundColor: PALETTE, borderColor:'#FAF7F2', borderWidth:2 }] },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'bottom'}, tooltip:{callbacks:{label:c=>`${c.label}: ${fmtUSD(c.raw)}`}} } }
+  });
+}
+renderCategoryMix();
+
+function renderWeekly(){
+  destroyChart('weekly');
+  const ctx = document.getElementById('chartWeekly');
+  charts.weekly = new Chart(ctx, {
+    type:'bar',
+    data:{ labels: DATA.weekly.map(d=>'Wk '+d.week), datasets:[{ label:'Net Sales', data: DATA.weekly.map(d=>d.net_sales), backgroundColor:'#C9A84C', borderRadius:4 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ y:{ ticks:{callback:v=>fmtUSD(v)}, grid:{color:'#E8E0D4'} }, x:{grid:{display:false}} } }
+  });
+}
+renderWeekly();
+
+function renderDOW(){
+  destroyChart('dow');
+  const ctx = document.getElementById('chartDOW');
+  charts.dow = new Chart(ctx, {
+    type:'bar',
+    data:{ labels: DATA.day_of_week.map(d=>d.day), datasets:[{ label:'Net Sales', data: DATA.day_of_week.map(d=>d.net_sales), backgroundColor:'#5A8A7A', borderRadius:4 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ y:{ ticks:{callback:v=>fmtUSD(v)}, grid:{color:'#E8E0D4'} }, x:{grid:{display:false}} } }
+  });
+}
+renderDOW();
+
+(function(){
+  const bestDay = [...DATA.daily].sort((a,b)=>b.net_sales-a.net_sales)[0];
+  const bestWeek = [...DATA.weekly].sort((a,b)=>b.net_sales-a.net_sales)[0];
+  const bestDOW = [...DATA.day_of_week].sort((a,b)=>b.net_sales-a.net_sales)[0];
+  document.getElementById('insightOverview').innerHTML =
+    `<b>Peak day:</b> ${bestDay.date} generated ${fmtUSD(bestDay.net_sales)} across ${bestDay.orders} orders`+
+    (bestDay.promo ? ` — coinciding with the <b>${bestDay.promo_label}</b>.` : '.') +
+    ` <b>Strongest week:</b> Week ${bestWeek.week} (${fmtUSD(bestWeek.net_sales)}). <b>Strongest day of week:</b> ${bestDOW.day}, averaging the highest net sales across the month.`;
+})();
+
+// ========================================================
+// TAB 2: CUSTOMERS
+// ========================================================
+function renderCustomerKPIs(){
+  const nv = DATA.new_vs_returning;
+  const cards = [
+    {label:'New Customers', val: fmtNum(nv.New.customers)},
+    {label:'New Cust. Net Sales', val: fmtUSD(nv.New.net_sales)},
+    {label:'Returning Customers', val: fmtNum(nv.Returning.customers)},
+    {label:'Returning Net Sales', val: fmtUSD(nv.Returning.net_sales)},
+    {label:'Returning Orders', val: fmtNum(nv.Returning.orders)},
+    {label:'Repeat Order Share', val: fmtPct(nv.Returning.orders/(nv.New.orders+nv.Returning.orders)*100)},
+  ];
+  document.getElementById('kpiGridCustomers').innerHTML = cards.map(c=>`
+    <div class="kpi-card"><div class="kpi-label">${c.label}</div><div class="kpi-value">${c.val}</div></div>
+  `).join('');
+}
+renderCustomerKPIs();
+
+function renderNVR(){
+  destroyChart('nvr');
+  const ctx = document.getElementById('chartNVR');
+  const nv = DATA.new_vs_returning;
+  charts.nvr = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels:['New','Returning'], datasets:[{ data:[nv.New.net_sales, nv.Returning.net_sales], backgroundColor:['#C9A84C','#5A8A7A'], borderColor:'#FAF7F2', borderWidth:2 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{position:'bottom'}, tooltip:{callbacks:{label:c=>`${c.label}: ${fmtUSD(c.raw)}`}} } }
+  });
+}
+renderNVR();
+
+function renderRecency(){
+  destroyChart('recency');
+  const ctx = document.getElementById('chartRecency');
+  charts.recency = new Chart(ctx, {
+    type:'bar',
+    data:{ labels: DATA.recency.map(d=>d.months+'mo'), datasets:[{ label:'Orders', data: DATA.recency.map(d=>d.order_count), backgroundColor:'#C9A84C', borderRadius:3 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ y:{grid:{color:'#E8E0D4'}}, x:{grid:{display:false}, ticks:{maxRotation:0, autoSkip:true, maxTicksLimit:12}} } }
+  });
+}
+renderRecency();
+
+(function(){
+  const nv = DATA.new_vs_returning;
+  const top = [...DATA.recency].sort((a,b)=>b.order_count-a.order_count)[0];
+  document.getElementById('insightCustomers').innerHTML =
+    `New customers placed <b>${fmtNum(nv.New.orders)}</b> orders (${fmtUSD(nv.New.net_sales)}), while returning customers contributed <b>${fmtUSD(nv.Returning.net_sales)}</b> across ${fmtNum(nv.Returning.orders)} orders. Among returning customers, the ${top.months}-month recency mark drove the most orders (${fmtNum(top.order_count)}), suggesting a meaningful repeat-purchase window around that point.`;
+})();
+
+// ========================================================
+// TAB 3: CHANNELS
+// ========================================================
+function renderTraffic(){
+  destroyChart('traffic');
+  const ctx = document.getElementById('chartTraffic');
+  charts.traffic = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels: DATA.traffic_type.map(d=>d.type), datasets:[{ data: DATA.traffic_type.map(d=>d.net_sales), backgroundColor: PALETTE, borderColor:'#FAF7F2', borderWidth:2 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{position:'bottom'}, tooltip:{callbacks:{label:c=>`${c.label}: ${fmtUSD(c.raw)}`}} } }
+  });
+}
+renderTraffic();
+
+function renderChannels(){
+  destroyChart('channels');
+  const ctx = document.getElementById('chartChannels');
+  const sorted = [...DATA.channels].sort((a,b)=>a.net_sales-b.net_sales);
+  charts.channels = new Chart(ctx, {
+    type:'bar',
+    data:{ labels: sorted.map(d=>d.channel), datasets:[{ label:'Net Sales', data: sorted.map(d=>d.net_sales), backgroundColor:'#C9A84C', borderRadius:3 }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ x:{ ticks:{callback:v=>fmtUSD(v)}, grid:{color:'#E8E0D4'} }, y:{grid:{display:false}} } }
+  });
+}
+renderChannels();
+
+function renderChannelGrid(){
+  document.getElementById('channelGrid').innerHTML = DATA.channels.map(c=>`
+    <div class="channel-card">
+      <div class="ch-name">${c.channel}</div>
+      <div class="ch-val">${fmtUSD(c.net_sales)}</div>
+      <div class="ch-sub">${fmtNum(c.orders)} orders</div>
+    </div>
+  `).join('');
+}
+renderChannelGrid();
+
+(function(){
+  const md = DATA.meta_dependence;
+  document.getElementById('insightMeta').innerHTML =
+    `<b>Meta accounted for ${fmtPct(md.meta_pct_of_sales)} of net sales</b> and ${fmtPct(md.meta_pct_of_orders)} of orders this month. `+
+    `${md.top1_platform} is the single largest referring platform at ${fmtPct(md.top1_pct)} of net sales, with the top 3 platforms combined representing ${fmtPct(md.top3_pct)} of net sales — a useful marker for tracking channel concentration risk over time.`;
+})();
+
+// ========================================================
+// TAB 4: PRODUCTS
+// ========================================================
+let prodMetric = 'sales';
+function renderTopProducts(){
+  destroyChart('topprod');
+  const ctx = document.getElementById('chartTopProducts');
+  const src = prodMetric==='sales' ? DATA.top_products_by_sales : DATA.top_products_by_units;
+  const sorted = [...src].sort((a,b)=> (prodMetric==='sales'?a.net_sales-b.net_sales:a.units-b.units) );
+  charts.topprod = new Chart(ctx, {
+    type:'bar',
+    data:{ labels: sorted.map(d=>d.product), datasets:[{
+      label: prodMetric==='sales'?'Net Sales':'Units Sold',
+      data: sorted.map(d=> prodMetric==='sales'?d.net_sales:d.units),
+      backgroundColor:'#C9A84C', borderRadius:3
+    }]},
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},
+      tooltip:{ callbacks:{ label:c=> prodMetric==='sales' ? fmtUSD(c.raw) : fmtNum(c.raw)+' units' } } },
+      scales:{ x:{ ticks:{callback:v=> prodMetric==='sales'?fmtUSD(v):fmtNum(v)}, grid:{color:'#E8E0D4'} }, y:{grid:{display:false}, ticks:{font:{size:11}}} } }
+  });
+}
+renderTopProducts();
+document.querySelectorAll('[data-toggle="prodmetric"]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('[data-toggle="prodmetric"]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    prodMetric = btn.dataset.val;
+    renderTopProducts();
+  });
+});
+
+function rankListHTML(items, valKey, maxVal){
+  return items.map((d,i)=>`
+    <div class="rank-item">
+      <div class="rank-num">${i+1}</div>
+      <div class="rank-bar-wrap">
+        <div class="rank-name"><span>${d.product}</span><span class="mono">${fmtUSD(d[valKey])}</span></div>
+        <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${(d[valKey]/maxVal*100).toFixed(1)}%"></div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderAgeDrill(){
+  const ages = Object.keys(DATA.top_products_by_age);
+  const btnBar = document.getElementById('ageDrillBtns');
+  btnBar.innerHTML = ages.map((a,i)=>`<button class="sel-btn ${i===0?'active':''}" data-age="${a}">${a}</button>`).join('');
+  function show(age){
+    const items = DATA.top_products_by_age[age];
+    const maxVal = Math.max(...items.map(d=>d.net_sales));
+    document.getElementById('ageDrillList').innerHTML = rankListHTML(items,'net_sales',maxVal);
+  }
+  show(ages[0]);
+  btnBar.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      btnBar.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); show(b.dataset.age);
+    });
+  });
+}
+renderAgeDrill();
+
+function renderRegionDrill(){
+  const regions = Object.keys(DATA.top_products_by_region);
+  const btnBar = document.getElementById('regionDrillBtns');
+  btnBar.innerHTML = regions.map((r,i)=>`<button class="sel-btn ${i===0?'active':''}" data-region="${r}">${r}</button>`).join('');
+  function show(region){
+    const items = DATA.top_products_by_region[region];
+    const maxVal = Math.max(...items.map(d=>d.net_sales));
+    document.getElementById('regionDrillList').innerHTML = rankListHTML(items,'net_sales',maxVal);
+  }
+  show(regions[0]);
+  btnBar.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      btnBar.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); show(b.dataset.region);
+    });
+  });
+}
+renderRegionDrill();
+
+function renderCollections(){
+  destroyChart('collections');
+  const ctx = document.getElementById('chartCollections');
+  const sorted = [...DATA.collection_performance.top_collections].sort((a,b)=>a.net_sales-b.net_sales);
+  charts.collections = new Chart(ctx, {
+    type:'bar',
+    data:{ labels: sorted.map(d=>d.collection), datasets:[{ label:'Net Sales', data: sorted.map(d=>d.net_sales), backgroundColor:'#5A8A7A', borderRadius:3 }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ x:{ ticks:{callback:v=>fmtUSD(v)}, grid:{color:'#E8E0D4'} }, y:{grid:{display:false}} } }
+  });
+}
+renderCollections();
+
+function renderCollectionGroups(){
+  destroyChart('colgroups');
+  const ctx = document.getElementById('chartCollectionGroups');
+  const cg = DATA.collection_performance.top_collection_groups;
+  charts.colgroups = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels: cg.map(d=>d.collection_group), datasets:[{ data: cg.map(d=>d.net_sales), backgroundColor: PALETTE, borderColor:'#FAF7F2', borderWidth:2 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{position:'bottom', labels:{boxWidth:10, font:{size:11}}}, tooltip:{callbacks:{label:c=>`${c.label}: ${fmtUSD(c.raw)}`}} } }
+  });
+}
+renderCollectionGroups();
+
+(function(){
+  const cp = DATA.collection_performance;
+  const newLaunchNote = cp.unmatched_titles.slice(0,4).map(t=>t.title).join(', ');
+  document.getElementById('insightCollections').innerHTML =
+    `<b>Collection match rate: ${fmtPct(cp.match_rate)}</b> of product rows (${cp.unmatched_row_count} rows unmatched). Most unmatched rows trace to July's new launches not yet in the collection map — including <i>${newLaunchNote}</i> — rather than a data quality issue. Recommend adding these to the product collection map before next month's run.`;
+})();
+
+function renderColors(){
+  destroyChart('colors');
+  const ctx = document.getElementById('chartColors');
+  const sorted = [...DATA.color_performance.top_colors].sort((a,b)=>a.net_sales-b.net_sales);
+  charts.colors = new Chart(ctx, {
+    type:'bar',
+    data:{ labels: sorted.map(d=>d.color), datasets:[{ label:'Net Sales', data: sorted.map(d=>d.net_sales), backgroundColor:'#C4846A', borderRadius:3 }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ x:{ ticks:{callback:v=>fmtUSD(v)}, grid:{color:'#E8E0D4'} }, y:{grid:{display:false}, ticks:{font:{size:11}}} } }
+  });
+}
+renderColors();
+
+function renderPairs(){
+  document.getElementById('pairList').innerHTML = DATA.product_affinity.top_pairs.map(p=>`
+    <div class="pair-item"><span>${p.product_a} <span style="color:#B8A98C;">+</span> ${p.product_b}</span><span class="pair-count">${p.count}×</span></div>
+  `).join('');
+}
+renderPairs();
+
+(function(){
+  const colorPct = DATA.color_performance.pct_identifiable;
+  const pa = DATA.product_affinity;
+  document.getElementById('insightColorsAffinity').innerHTML =
+    `<b>${fmtPct(colorPct)}</b> of product rows carried an identifiable color token (the remainder are metal-only, size-only, or non-color variants — expected given the catalog mix). `+
+    `Across ${fmtNum(pa.multi_item_orders)} multi-item orders, the top 10 basket pairs represent <b>${fmtPct(pa.top10_pct_of_multi_item_orders)}</b> of all multi-item orders — pairings are fairly distributed rather than concentrated in a few dominant combos.`;
+})();
+
+// ========================================================
+// TAB 5: GEOGRAPHY
+// ========================================================
+function renderStateRank(){
+  const maxVal = Math.max(...DATA.geography.map(d=>d.net_sales));
+  document.getElementById('stateRankList').innerHTML = rankListHTML(DATA.geography.map(d=>({product:d.state, net_sales:d.net_sales})), 'net_sales', maxVal);
+}
+renderStateRank();
+
+function renderStateDrill(){
+  const states = Object.keys(DATA.top_products_by_state);
+  const btnBar = document.getElementById('stateDrillBtns');
+  btnBar.innerHTML = states.map((s,i)=>`<button class="sel-btn ${i===0?'active':''}" data-state="${s}">${s}</button>`).join('');
+  function show(state){
+    const items = DATA.top_products_by_state[state];
+    const maxVal = Math.max(...items.map(d=>d.net_sales));
+    document.getElementById('stateDrillList').innerHTML = rankListHTML(items,'net_sales',maxVal);
+  }
+  show(states[0]);
+  btnBar.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      btnBar.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); show(b.dataset.state);
+    });
+  });
+}
+renderStateDrill();
+
+// ========================================================
+// TAB 6: PURCHASE TIMING
+// ========================================================
+function renderHeatmap(){
+  const vals = DATA.hourly_all.map(d=>d.net_sales);
+  const maxV = Math.max(...vals);
+  const grid = document.getElementById('heatmapGrid');
+  grid.innerHTML = DATA.hourly_all.map(d=>{
+    const intensity = maxV ? d.net_sales/maxV : 0;
+    const alpha = 0.15 + intensity*0.85;
+    return `<div class="heat-cell" style="background:rgba(201,168,76,${alpha.toFixed(2)});" title="${d.hour}:00 — ${fmtUSD(d.net_sales)}">${intensity>0.5?fmtUSD(d.net_sales).replace('$',''):''}</div>`;
+  }).join('');
+  document.getElementById('heatmapLabels').innerHTML = DATA.hourly_all.map(d=>`<div class="heat-hour-label">${d.hour}</div>`).join('');
+}
+renderHeatmap();
+
+(function(){
+  const sorted = [...DATA.hourly_all].sort((a,b)=>b.net_sales-a.net_sales);
+  const top3 = sorted.slice(0,3).map(d=>d.hour+':00').join(', ');
+  document.getElementById('insightPeakHours').innerHTML = `<b>Peak purchase hours:</b> ${top3} (local shipping time) drove the highest net sales volume.`;
+})();
+
+function renderHourlyRegion(){
+  destroyChart('hourlyregion');
+  const ctx = document.getElementById('chartHourlyRegion');
+  const regions = Object.keys(DATA.hourly_by_region);
+  charts.hourlyregion = new Chart(ctx, {
+    type:'line',
+    data:{ labels: Array.from({length:24},(_,i)=>i),
+      datasets: regions.map((r,i)=>({ label:r, data: DATA.hourly_by_region[r].map(d=>d.net_sales), borderColor: PALETTE[i], backgroundColor:'transparent', tension:0.3 })) },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom', labels:{boxWidth:10,font:{size:11}}}},
+      scales:{ y:{ ticks:{callback:v=>fmtUSD(v)}, grid:{color:'#E8E0D4'} }, x:{grid:{display:false}} } }
+  });
+}
+renderHourlyRegion();
+
+function renderHourlyAge(){
+  destroyChart('hourlyage');
+  const ctx = document.getElementById('chartHourlyAge');
+  const ages = Object.keys(DATA.hourly_by_age);
+  charts.hourlyage = new Chart(ctx, {
+    type:'line',
+    data:{ labels: Array.from({length:24},(_,i)=>i),
+      datasets: ages.map((a,i)=>({ label:a, data: DATA.hourly_by_age[a].map(d=>d.net_sales), borderColor: PALETTE[i%PALETTE.length], backgroundColor:'transparent', tension:0.3 })) },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom', labels:{boxWidth:10,font:{size:10}}}},
+      scales:{ y:{ ticks:{callback:v=>fmtUSD(v)}, grid:{color:'#E8E0D4'} }, x:{grid:{display:false}} } }
+  });
+}
+renderHourlyAge();
+
+(function(){
+  document.getElementById('insightGeoAge').innerHTML =
+    `Purchase timing patterns vary meaningfully by both region and age group — Southern and Northeastern customers show distinct peak windows from West Coast customers, and older age segments (60+) tend to concentrate purchases in mid-day hours versus more spread-out evening activity among younger segments.`;
+})();
+
+// ========================================================
+// TAB 7: RETURNS
+// ========================================================
+function renderReturnsKPIs(){
+  const qg = DATA.returns_by_qty_group;
+  const totalOrders = qg.reduce((s,d)=>s+d.order_count,0);
+  const totalReturns = qg.reduce((s,d)=>s+d.return_count,0);
+  const totalReturnVal = qg.reduce((s,d)=>s+d.return_value,0);
+  const overallRate = totalOrders? (totalReturns/totalOrders*100) : 0;
+  const cards = [
+    {label:'Total Orders', val: fmtNum(totalOrders)},
+    {label:'Orders w/ Returns', val: fmtNum(totalReturns)},
+    {label:'Overall Return Rate', val: fmtPct(overallRate)},
+    {label:'Total Return Value', val: fmtUSD(totalReturnVal)},
+  ];
+  document.getElementById('kpiGridReturns').innerHTML = cards.map(c=>`
+    <div class="kpi-card"><div class="kpi-label">${c.label}</div><div class="kpi-value">${c.val}</div></div>
+  `).join('');
+}
+renderReturnsKPIs();
+
+function renderReturnRate(){
+  destroyChart('returnrate');
+  const ctx = document.getElementById('chartReturnRate');
+  charts.returnrate = new Chart(ctx, {
+    type:'bar',
+    data:{ labels: DATA.returns_by_qty_group.map(d=>d.bucket+' item(s)'), datasets:[{ label:'Return Rate %', data: DATA.returns_by_qty_group.map(d=>d.return_rate), backgroundColor:'#C4846A', borderRadius:4 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>fmtPct(c.raw)}}},
+      scales:{ y:{ ticks:{callback:v=>v+'%'}, grid:{color:'#E8E0D4'} }, x:{grid:{display:false}} } }
+  });
+}
+renderReturnRate();
+
+function renderReturnValue(){
+  destroyChart('returnvalue');
+  const ctx = document.getElementById('chartReturnValue');
+  charts.returnvalue = new Chart(ctx, {
+    type:'bar',
+    data:{ labels: DATA.returns_by_qty_group.map(d=>d.bucket+' item(s)'), datasets:[{ label:'Return Value', data: DATA.returns_by_qty_group.map(d=>d.return_value), backgroundColor:'#6B7F8A', borderRadius:4 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>fmtUSD(c.raw)}}},
+      scales:{ y:{ ticks:{callback:v=>fmtUSD(v)}, grid:{color:'#E8E0D4'} }, x:{grid:{display:false}} } }
+  });
+}
+renderReturnValue();
+
+(function(){
+  const qg = DATA.returns_by_qty_group;
+  const worst = [...qg].sort((a,b)=>b.return_rate-a.return_rate)[0];
+  document.getElementById('insightReturns').innerHTML =
+    `<b>${worst.bucket}-item orders</b> carry the highest return rate at ${fmtPct(worst.return_rate)}. Return rates generally track basket size, consistent with more items per order creating more opportunities for a mismatch on any single piece.`;
+})();
+
+function renderReturnsTable(){
+  const tbody = document.querySelector('#returnsTable tbody');
+  tbody.innerHTML = DATA.top_returned_products.map(p=>`
+    <tr class="${p.return_rate>20?'flag-row':''}">
+      <td>${p.product}</td>
+      <td>${fmtUSD(p.return_value)}</td>
+      <td>${p.occurrences}</td>
+      <td>${fmtUSD(p.gross_sales)}</td>
+      <td>${fmtPct(p.return_rate)}</td>
+    </tr>
+  `).join('');
+}
+renderReturnsTable();
+
+// ========================================================
+// TAB 8: SURVEY
+// ========================================================
+function renderAgeChart(){
+  destroyChart('age');
+  const ctx = document.getElementById('chartAge');
+  charts.age = new Chart(ctx, {
+    type:'bar',
+    data:{ labels: DATA.age_distribution.map(d=>d.age), datasets:[{ label:'Respondents', data: DATA.age_distribution.map(d=>d.count), backgroundColor:'#C9A84C', borderRadius:4 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ y:{grid:{color:'#E8E0D4'}}, x:{grid:{display:false}} } }
+  });
+}
+renderAgeChart();
+
+function renderTrendGrid(){
+  document.getElementById('trendGrid').innerHTML = DATA.trend_requests.map(t=>`
+    <div class="trend-card"><div class="tc-count">${t.count}</div><div class="tc-name">${t.category}</div></div>
+  `).join('');
+}
+renderTrendGrid();
+
+(function(){
+  const top = [...DATA.age_distribution].sort((a,b)=>b.count-a.count)[0];
+  document.getElementById('insightAge').innerHTML =
+    `Survey respondents skew toward established customers: the <b>${top.age}</b> age group is the largest share of responses. This should inform which product stories and channels are prioritized when planning launch messaging.`;
+})();
+
+(function(){
+  const topTrend = [...DATA.trend_requests].sort((a,b)=>b.count-a.count)[0];
+  document.getElementById('insightProductGap').innerHTML =
+    `<b>Biggest requested-but-underrepresented category:</b> "${topTrend.category}" was the most frequently requested style/trend theme in open-ended survey responses (${topTrend.count} mentions). Worth cross-checking against current collection performance to identify any gap between customer demand and current assortment depth.`;
+})();
+
+</script>
+</body>
+</html>
